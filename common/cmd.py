@@ -8,6 +8,7 @@ import cPickle
 
 class Cmd(object):
     '''SQL命令'''
+    Cmd_Type = ('select', 'update', 'insert', 'delete', 'login', 'logout')
     def __init__(self):
         self.cmd_type = ""
         self.cmd_table = ""
@@ -25,7 +26,9 @@ class Cmd(object):
         #    select,查询数据
         #    update,更新数据
         #    delete,删除数据
-        if cmd_type in ('select', 'update', 'insert', 'delete'):
+        #    login, 登录
+        #    logout,退出
+        if cmd_type in Cmd.Cmd_Type:
             self.cmd_type = cmd_type
     
     def set_cmd_condition(self, cmd_condition):
