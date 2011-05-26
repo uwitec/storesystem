@@ -46,6 +46,7 @@ class Cmd(object):
         return text
 
 def get_cmd(table_name):
+    print table_name, "hello world"
     cmd = Cmd()
     return cmd
 
