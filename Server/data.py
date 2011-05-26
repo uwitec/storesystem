@@ -1,0 +1,181 @@
+# -*- coding:GBK -*-
+import sqlite3
+import os
+import log
+class DataBase(object):
+    
+    def __init__(self, filename):
+        '''初始化数据库'''
+        # filename[string],数据库文件名
+        
+        super(DataBase, self).__init__()
+        # 生成日志对象
+        self.logger = log.get_logger("DataBase")
+        
+        # 若数据库文件夹不存在，创建文件夹
+        db_path = 'db'
+        if not os.path.exists(db_path):
+            self.logger.info("create directory: db")
+            os.mkdir(db_path)
+        
+        db_name = os.path.join(db_path, filename)
+        if not os.path.exists(db_name):
+            self.logger.info("create database file:" + filename)
+            self.__create_table(db_name)
+        
+        # 调试开头
+        sqlite3.enable_callback_tracebacks(True)
+        
+        # 连接数据库
+        self.con = sqlite3.connect(db_name)
+        self.con.row_factory = sqlite3.Row
+
+    def get_cursor(self):
+        ''''''
+        return self.con.cursor()
+    
+    def safe_execute(self, command):
+        '''安全地执行SQL语句'''
+        try:
+            self.con.execute(command)
+            self.con.commit()
+        except Exception, e:
+            self.logger.error('safe_execute->command=%s;%s' % (command, e))
+            self.rollback()
+    
+    def safe_executemany(self, command, obj_list):
+        '''执行多个SQL语句'''
+        try:
+            self.con.executemany(command, obj_list)
+            self.con.commit()
+        except Exception, e:
+            self.logger.error('safe_executemany->command=%s;%s' % (command, e))
+            self.rollback()
+    
+    def rollback(self):
+        '''出现错误时进行回滚'''
+        self.con.rollback()
+        self.logger.info('rollback from error')        
+    
+    def __create_table(self, db_name):
+        '''创建新的数据库，当数据库不存在时调用'''
+        # db_name[string],数据库文件绝对路径
+        
+        file = open(db_name, 'w')
+        file.close()
+        
+        conn = sqlite3.connect(db_name)
+        cursor = conn.cursor()
+        self.__create_user_table(cursor)
+        self.__create_product_table(cursor)
+        self.__create_factory_table(cursor)
+        self.__create_purchase_order_table(cursor)
+        self.__create_return_order(cursor)
+        self.__create_sale_order_table(cursor)    
+        cursor.close()
+        conn.commit()
+    
+    def __create_user_table(self, cursor):
+        '''创建用户表'''
+        command = """
+        CREATE TABLE user(
+            id        INTEGER PRIMARY KEY,
+            password  TEXT NOT NULL,
+            authority INTEGER NOT NULL
+        );            
+        """
+        cursor.execute(command)
+    
+    def __create_product_table(self, cursor):
+        '''创建产品数据表'''
+        # (ID, 产品名称，类别，厂商ID，数量，日期，
+        #  进货价，内围价，外围价，其它费用）
+        command = """
+        CREATE TABLE product(
+            id        INTEGER PRIMARY KEY,
+            name      TEXT NOT NULL,
+            type      TEXT,
+            MF_id     INTEGER NOT NULL,
+            count     INTEGER NOT NULL,
+            date      TEXT NOT NULL,
+            price_buy INTEGER NOT NULL,
+            price_nw  INTEGER,
+            price_ww  INTEGER,
+            fee_other INTEGER
+            );"""
+        cursor.execute(command)
+    
+    def __create_factory_table(self, cursor):
+        '''创建厂商数据表'''
+        command = """
+        CREATE TABLE factory(
+            id        INTEGER PRIMARY KEY,
+            name      TEXT,
+            contact   TEXT,
+            post      TEXT,
+            phone     TEXT,
+            zip_code  TEXT,
+            addr      TEXT,
+            email     TEXT,
+            card_type TEXT,
+            card_num  TEXT
+        );            
+        """
+        cursor.execute(command)
+    
+    def __create_purchase_order_table(self, cursor):
+        '''创建进货订单数据表'''
+        command = """
+        CREATE TABLE purchase_order(
+            id        INTEGER PRIMARY KEY,
+            product_id INTEGER NOT NULL,
+            count     INTEGER NOT NULL,
+            date      TEXT,
+            MF_id     INTEGER,
+            price_pc  INTEGER,
+            price_pay INTEGER,
+            fee_other INTEGER
+        );
+        """
+        cursor.execute(command)
+    
+    def __create_sale_order_table(self, cursor):
+        '''创建销售订单数据表'''
+        command = """
+        CREATE TABLE sale_order(
+            id        INTEGER PRIMARY KEY,
+            type      INTEGER,
+            date      TEXT,
+            product_id INTEGER NOT NULL,            
+            count     INTEGER NOT NULL,
+            price_sell INTEGER,
+            price_pay  INTEGER,
+            seller    TEXT,
+            sale_addr TEXT,
+            buyer_name TEXT,
+            buyer_tel  TEXT           
+        );
+        """
+        cursor.execute(command)
+    
+    def __create_return_order(self, cursor):
+        '''创建退货订单'''
+        command = """
+        CREATE TABLE return_order(
+            id        INTEGER PRIMARY KEY,
+            product_id INTEGER NOT NULL,
+            count     INTEGER NOT NULL,
+            date      TEXT,
+            price_ret INTEGER
+        );
+        """
+        cursor.execute(command)
+
+if __name__ == "__main__":
+    
+    def test_1():
+        db = DataBase("sheng.db")
+        db.safe_execute('hello rowl')
+        db.safe_execute("select * from return_order")        
+    
+    test_1()
