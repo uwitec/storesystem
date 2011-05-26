@@ -29,7 +29,7 @@ __log = None
 def get_logger(name):
     global __log
     if not __log:
-        __log = Log()
+        __log = Log(level=logging.DEBUG)
     return __log.get_logger(name)
 
 if __name__ == "__main__":

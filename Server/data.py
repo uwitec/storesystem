@@ -23,7 +23,7 @@ class DataBase(object):
             self.logger.info("create database file:" + filename)
             self.__create_table(db_name)
         
-        # 调试开头
+        # 调试开关
         sqlite3.enable_callback_tracebacks(True)
         
         # 连接数据库
@@ -79,7 +79,7 @@ class DataBase(object):
         '''创建用户表'''
         command = """
         CREATE TABLE user(
-            id        INTEGER PRIMARY KEY,
+            name      TEXT NOT NULL,
             password  TEXT NOT NULL,
             authority INTEGER NOT NULL
         );            
@@ -172,10 +172,16 @@ class DataBase(object):
         cursor.execute(command)
 
 if __name__ == "__main__":
-    
-    def test_1():
+    def build_data():
         db = DataBase("sheng.db")
-        db.safe_execute('hello rowl')
-        db.safe_execute("select * from return_order")        
-    
-    test_1()
+        import common.user
+        user_list = [
+            ("admin", "12345", 0),
+            ("user1", "67890", 1)
+        ]
+        #db.safe_executemany("insert into user values(?, ?, ?)", user_list)
+        cursor = db.get_cursor()
+        cursor.execute("select * from user")
+        for row in cursor.fetchall():
+            print row
+    build_data()

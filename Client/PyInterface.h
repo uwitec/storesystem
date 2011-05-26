@@ -9,11 +9,7 @@ public:
 	~PyObjectPtr()
 	{
 		pyRelease();
-	}
-	PyObject* operator -> ()
-	{
-		return m_pObject;
-	}
+	}	
 	PyObject& operator * ()
 	{
 		return *m_pObject;
@@ -22,8 +18,10 @@ public:
 	{
 		pyRelease();
 		m_pObject = obj;
+		//printf("operator =\n");
 		return *this;
 	}
+	PyObject* get(){ return m_pObject; }
 protected:
 	void pyRelease()
 	{
@@ -31,6 +29,7 @@ protected:
 		{
 			Py_XDECREF(m_pObject);
 			m_pObject = NULL;
+			//printf("Py_XDECREF\n");
 		}
 	}
 	PyObject* m_pObject;

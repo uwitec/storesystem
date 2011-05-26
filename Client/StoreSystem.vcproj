@@ -62,7 +62,7 @@
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				GenerateDebugInformation="false"
-				SubSystem="2"
+				SubSystem="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -168,6 +168,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Log.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LogManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -209,6 +217,14 @@
 			Filter="h"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Log.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LogManager.h"
+				>
+			</File>
 			<File
 				RelativePath=".\MainWidget.h"
 				>
@@ -463,6 +479,10 @@
 				RelativePath=".\python\cmd.py"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="base"
+			>
 		</Filter>
 		<File
 			RelativePath=".\StoreSystem.rc"
