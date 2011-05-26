@@ -18,13 +18,14 @@ public:
 	virtual ~Log(void);
 	void setOutStream(std::ostream& stream);
 	void setLogLevel(LogLevel level = LogLevel_Debug);
-	void debug(const char* msg);
-	void info(const char* msg);
-	void warning(const char* msg);
-	void error(const char* msg);
-protected:	
+	void debug(const std::string& msg);	
+	void warning(const std::string& msg);	
+	void error(const std::string& msg);	
+	void info(const std::string& msg);
+protected:
 	void setLogName(const char* name);
-	std::string decorate(const char* msg);
+	void logMessage(const std::string& msg, LogLevel level);
+	std::string decorate(const std::string& msg, LogLevel level);
 	std::string m_name;			// 日志名字
 	LogLevel m_logLevel;		// 日志等级
 	std::ostream* m_pSstream;	// 日志输出流

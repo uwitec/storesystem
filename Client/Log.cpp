@@ -21,20 +21,38 @@ void Log::setLogLevel(LogLevel level)
 	m_logLevel = level;
 }
 
-void Log::debug(const char* msg)
+void Log::debug(const std::string& msg)
 {
 	if( m_logLevel <= LogLevel_Debug )
-	{
-		std::string text = this->decorate(msg);
-		printf(text.c_str());
-		(*m_pSstream)<<text<<std::endl;
-	}
+		this->logMessage(msg, LogLevel_Debug);
 }
 
-std::string Log::decorate(const char* msg, LogLevel level)
+void Log::warning(const std::string& msg)
 {
+	if( m_logLevel <= LogLevel_Warning )
+		this->logMessage(msg, LogLevel_Warning);
+}
+
+void Log::error(const std::string& msg)
+{
+	if( m_logLevel <= LogLevel_Error )
+		this->logMessage(msg, LogLevel_Error);
+}
+
+void Log::info(const std::string& msg)
+{
+	this->logMessage(msg, LogLevel_Info);
+}
+
+std::string Log::decorate(const std::string& msg, LogLevel level)
+{
+	static const char* LogLevelName [] =
+	{
+		"Debug", "Warning", "Error", "Info"
+	};
 	char bytes[2048];
-	sprintf_s(bytes, sizeof(bytes)-1, "[%s]", m_name.c_str());
+	sprintf_s(bytes, sizeof(bytes)-1, "%s\t[%s]%s", 
+		LogLevelName[(int)level], m_name.c_str(), msg.c_str());
 	std::string text = bytes;
 	return text;
 }
@@ -42,4 +60,10 @@ std::string Log::decorate(const char* msg, LogLevel level)
 void Log::setLogName(const char* name)
 {
 	m_name = name;
+}
+
+void Log::logMessage(const std::string& msg, LogLevel level)
+{
+	std::string text = this->decorate(msg, level);
+	(*m_pSstream)<<text<<std::endl;
 }
