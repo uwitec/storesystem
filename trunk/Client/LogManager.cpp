@@ -32,6 +32,7 @@ LogManager& LogManager::getSingleton()
 		pLogManager = new LogManager();
 		pLogManager->m_pStream = new std::ofstream("log.log");
 		pLogManager->m_pDefaultLog = new Log(*pLogManager->m_pStream);
+		pLogManager->m_pDefaultLog->setLogName("DefaultLog");
 	}
 	return *pLogManager;
 }
@@ -56,3 +57,20 @@ Log* LogManager::getLog(const char* name)
 		log = itr->second;
 	return log;
 }
+
+/*
+使用方法：
+LogManager mgr = LogManager::getSingleton();
+Log* log = mgr.getDefaultLog();
+log->debug("hello world");
+log->info("very good");
+log->warning("a warning give");
+log->error("critical error happend");
+
+log = mgr.getLog("python");
+log->setLogLevel(LogLevel_Warning);
+log->debug("no debug");
+log->info("is info");
+log->warning("is warning");
+log->error("critical error");
+*/

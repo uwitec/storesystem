@@ -18,9 +18,10 @@ int main()
 {
 	PyInterface py;
 	py.loadModule("common.cmd");
-
-	LogManager mgr = LogManager::getSingleton();
-	Log* log = mgr.getDefaultLog();
-	log->debug("hello world");
-	log->debug("very good");
+	PyObjectPtr func = py.getFunction("get_cmd");
+	printf("%d\n", Py_REFCNT(func.get()));
+	func = py.getFunction("get_cmd");
+	printf("%d\n", Py_REFCNT(func.get()));
+	func = py.getFunction("get_cmd");
+	printf("%d\n", Py_REFCNT(func.get()));
 }
