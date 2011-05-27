@@ -29,6 +29,7 @@ class DataBase(object):
         # 连接数据库
         self.con = sqlite3.connect(db_name)
         self.con.row_factory = sqlite3.Row
+        self.logger.info("init DataBase successfully")
 
     def get_cursor(self):
         ''''''
@@ -180,8 +181,16 @@ if __name__ == "__main__":
             ("user1", "67890", 1)
         ]
         #db.safe_executemany("insert into user values(?, ?, ?)", user_list)
+        #db.safe_execute("select * from user")
+        #cursor = db.get_cursor()
+        #cursor.execute("select * from user")
+        #for row in cursor.fetchall():
+        #    print row
+        select_user(db)
+    
+    def select_user(db):
         cursor = db.get_cursor()
-        cursor.execute("select * from user")
+        cursor.execute("select * from user where name=? and password=?", ("admin", 12345))
         for row in cursor.fetchall():
             print row
     build_data()

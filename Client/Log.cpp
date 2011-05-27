@@ -1,10 +1,11 @@
 #include "StdAfx.h"
 #include "Log.h"
 #include "LogManager.h"
+#include <iostream>
 Log::Log(std::ostream& stream, LogLevel level)
-: m_pSstream(&stream), m_logLevel(level)
+: m_pStream(&stream), m_logLevel(level), m_isStdActived(false)
 {
-	
+	m_pStdStream = &std::cout;
 }
 
 Log::~Log(void)
@@ -13,7 +14,12 @@ Log::~Log(void)
 
 void Log::setOutStream(std::ostream& stream)
 {
-	m_pSstream = &stream;
+	m_pStream = &stream;
+}
+
+void Log::setStdStreamActive(bool isActived)
+{
+	m_isStdActived = isActived;
 }
 
 void Log::setLogLevel(LogLevel level)
@@ -51,7 +57,7 @@ std::string Log::decorate(const std::string& msg, LogLevel level)
 		"Debug", "Warning", "Error", "Info"
 	};
 	char bytes[2048];
-	sprintf_s(bytes, sizeof(bytes)-1, "%s\t[%s]%s", 
+	sprintf_s(bytes, sizeof(bytes)-1, "%s\t[%s]\t%s", 
 		LogLevelName[(int)level], m_name.c_str(), msg.c_str());
 	std::string text = bytes;
 	return text;
@@ -65,5 +71,7 @@ void Log::setLogName(const char* name)
 void Log::logMessage(const std::string& msg, LogLevel level)
 {
 	std::string text = this->decorate(msg, level);
-	(*m_pSstream)<<text<<std::endl;
+	(*m_pStream)<<text<<std::endl;
+	if( m_isStdActived )
+		(*m_pStdStream)<<text<<std::endl;
 }

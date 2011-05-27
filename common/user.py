@@ -7,3 +7,9 @@ class User(object):
         self.name = ""      # 用户名
         self.password = ""  # 密码
         self.author = 1     # 权限，0为最高
+    
+    def __repr__(self):
+        text = "User["
+        text += "name:%s password:%s author:%d]" % (self.name,
+                        self.password, self.author)
+        return text
