@@ -4,10 +4,26 @@ using namespace std;
 
 PyObjectPtr PyObjectPtr::PyObjectPtrNull(NULL);
 
+PyObjectPtr::PyObjectPtr(PyObject* obj, std::string objName)
+:m_pObject(obj), m_objName(objName)
+{
+}
+PyObjectPtr::PyObjectPtr(const PyObjectPtr& objPtr, std::string objName)
+: m_objName(objName)
+{
+	//printf("copy construct\n");
+	m_pObject = objPtr.m_pObject;
+	m_objName = objPtr.m_objName;
+	//Py_XINCREF(m_pObject);
+	//PyObjectPtr_IncRef(*this);
+	PyObjectPtr_IncRef(m_pObject, m_objName);
+}
+
 PyObjectPtr::~PyObjectPtr()
 {
 	pyRelease();
 }
+
 
 PyObjectPtr& PyObjectPtr::operator = (PyObject* obj)
 {
@@ -18,9 +34,11 @@ PyObjectPtr& PyObjectPtr::operator = (PyObject* obj)
 
 PyObjectPtr& PyObjectPtr::operator = (PyObjectPtr& obj)
 {
+	//printf("operator = PyObjectPtr\n");
 	pyRelease();
-	Py_XINCREF(obj.get());
-	m_pObject = obj.get();		
+	PyObjectPtr_IncRef(obj.get(), obj.m_objName);
+	m_pObject = obj.get();
+	m_objName = obj.m_objName;
 	return *this;
 }
 
@@ -28,12 +46,7 @@ void PyObjectPtr::pyRelease()
 {
 	if( m_pObject )
 	{
-		//printf("Py_XDECREF");
-		Py_XDECREF(m_pObject);		
-		char msg[2048];
-		sprintf_s(msg, sizeof(msg), "%s:%d Py_XDECREF", m_objName.c_str(), 
-			Py_REFCNT(m_pObject));
-		LogManager::getSingleton().getDefaultLog()->debug(msg);
+		PyObjectPtr_DecRef(m_pObject, m_objName);
 		m_pObject = NULL;
 	}
 }
@@ -61,7 +74,7 @@ PyInterface::~PyInterface(void)
 
 void PyInterface::loadModule(const char* moduleName)
 {
-	PyObjectPtr name(PyString_FromString(moduleName), "moduleName");
+	PyObjectPtr name(PyString_FromString(moduleName), moduleName);	
 	m_pModule = PyImport_Import(name.get());
 	m_pModule.setObjName("module");
 
@@ -74,12 +87,19 @@ void PyInterface::loadModule(const char* moduleName)
 	m_pLog->info(string("open ") + moduleName + " successfully");
 }
 
-PyObjectPtr& PyInterface::getFunction(const char* name)
+PyObjectPtr& PyInterface::getModuleFunction(const char* name)
 {
 	PyObjectPtrDict::iterator itr = m_pPyDict.find(string(name));
 	if( itr != m_pPyDict.end() )
 		return itr->second;
-	PyObjectPtr func(PyObject_GetAttrString(m_pModule.get(), name));
+	PyObjectPtr func = this->getFunction(m_pModule, name);
+	m_pPyDict[string(name)] = func;
+	return m_pPyDict[string(name)];
+}
+
+PyObjectPtr PyInterface::getFunction(const PyObjectPtr& obj, const char* name)
+{
+	PyObjectPtr func(PyObject_GetAttrString(obj.get(), name), name);
 	if( func.get() == NULL )
 	{
 		m_pLog->error(string("getFunction with name = ") + name + " is NULL.");
@@ -90,6 +110,26 @@ PyObjectPtr& PyInterface::getFunction(const char* name)
 		m_pLog->error(string("getFunction with name = ") + name + " is not callable.");
 		return PyObjectPtr::PyObjectPtrNull;
 	}
-	m_pPyDict[string(name)] = func;
-	return m_pPyDict[string(name)];
+	return func;
+}
+
+void PyInterface::setObjAttrInt(PyObjectPtr& pyObjPtr, const char* attrName, int value)
+{
+	PyObject_SetAttrString(pyObjPtr.get(), attrName, PyLong_FromLong(value));
+}
+void PyInterface::setObjAttrString(PyObjectPtr& pyObjPtr, const char* attrName, const char* value)
+{
+	PyObject_SetAttrString(pyObjPtr.get(), attrName, PyString_FromString(value));
+}
+void PyInterface::setObjAttrFloat(PyObjectPtr& pyObjPtr, const char* attrName, float value)
+{
+	PyObject_SetAttrString(pyObjPtr.get(), attrName, PyFloat_FromDouble(value));
+}
+void PyInterface::setObjAttrDouble(PyObjectPtr& pyObjPtr, const char* attrName, double value)
+{
+	PyObject_SetAttrString(pyObjPtr.get(), attrName, PyFloat_FromDouble(value));
+}
+void PyInterface::setObjAttrObject(PyObjectPtr& pyObjPtr, const char* attrName, PyObjectPtr& value)
+{
+	PyObject_SetAttrString(pyObjPtr.get(), attrName, value.get());
 }

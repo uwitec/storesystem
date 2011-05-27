@@ -1,14 +1,14 @@
 # -*- coding:GBK -*-
+import cPickle
+import db_global
 from product import *
 from purchase import *
 from return_order import *
 from sale import *
 from user import *
-import cPickle
 
 class Cmd(object):
     '''SQL命令'''
-    Cmd_Type = ('select', 'update', 'insert', 'delete', 'login', 'logout')
     def __init__(self):
         self.cmd_type = ""
         self.cmd_table = ""
@@ -18,6 +18,7 @@ class Cmd(object):
     def set_cmd_object(self, cmd_object):
         '''设置操作的对象'''
         self.cmd_object = cmd_object
+        #print 'set_cmd_object'
     
     def set_cmd_type(self, cmd_type):
         '''设置命令的类型'''
@@ -28,8 +29,9 @@ class Cmd(object):
         #    delete,删除数据
         #    login, 登录
         #    logout,退出
-        if cmd_type in Cmd.Cmd_Type:
+        if cmd_type in db_global.Cmd_Type:
             self.cmd_type = cmd_type
+        
     
     def set_cmd_condition(self, cmd_condition):
         '''设置条件'''
@@ -45,9 +47,15 @@ class Cmd(object):
         text += "cmd_object:%s " % self.cmd_object        
         return text
 
+class CmdData(object):
+    '''SQL命令的查询结果'''
+    
+    def __init__(self):
+        pass
+
 def get_cmd(table_name):
-    print table_name, "hello world"
     cmd = Cmd()
+    cmd.cmd_table = table_name
     return cmd
 
 fmt_string = ("[*-&*", "*&-*]")
@@ -56,6 +64,7 @@ def fmt_msg(msg):
     # msg[string], 序列化后的字符串
     # return[string], 返回格式化的字符串
     fmtMsg = "%s%s%s" % (fmt_string[0], msg, fmt_string[1])
+    #print fmtMsg
     return fmtMsg
 
 def get_msg_from_fmt(fmtMsg):
@@ -78,6 +87,7 @@ def marshal(cmd):
     '''对Cmd对象进行序列化'''
     # cmd[Cmd(object)], Cmd对象
     # return[string], 返回序列化后的字符串
+    #print cmd
     return cPickle.dumps(cmd)
 
 def unmarshal(cmd_msg):
@@ -86,6 +96,11 @@ def unmarshal(cmd_msg):
     # return[Cmd(object)], Cmd对象
     return cPickle.loads(cmd_msg)
 
+def pack(cmd):
+    # cmd[Cmd(object)], Cmd对象
+    msg = marshal(cmd)
+    return fmt_msg(msg)
+    
 if __name__ == "__main__":
     p = Product()
     strp = cPickle.dumps(p)
