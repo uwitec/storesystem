@@ -7,23 +7,45 @@
 #include "SqlCmd.h"
 #include "ClientNet.h"
 #include "Logic.h"
+#include "LoginDlg.h"
 #include <QDebug>
-
+#ifdef __DEBUG
+#include "TestUnit.h"
+#endif
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	QTranslator translator;
-	translator.load("qt_zh_CN.ts");
-	//StoreSystem w;
-	//w.show();
-	//ClientNet net;
-	//net.send("hello world");
+	QTextCodec::setCodecForCStrings( QTextCodec::codecForName("GBK") );
+	QTextCodec::setCodecForLocale( QTextCodec::codecForName("GBK") );
+	StoreSystem gui;
+	gui.show();
 	Logic logic;
-	SqlCmd* p_cmd = logic.getSqlCmd();
-	p_cmd->login("admin", "12345");
-	//QString str = "hello world";
-	//qDebug()<<str<<str.mid(1);
-	return a.exec();
+	logic.setGui(gui.getMainWidget());
+	//logic.userSearch("");
+	//logic.productSearch();
+	//LoginDlg loginDlg;
+	//loginDlg.show();
+	//translator.load("qt_zh_CN.ts");
+	//TestUMSearch();
+	//TestUMLogin();
+	//TestUMUpdate();
+	//TestCmdgetCmdMsg();
+	//TestCmdcutReplyMsg();
+	
+	//TestLogicLogin();
+	//TestLogicUserSearch();
+	//TestLogicUserUpdate();
+	//TestLogicParseReplyMsg();
+	//ClientNet net;
+	//TestPy();
+	//SqlCmd sqlCmd;
+	//Logic logic;
+	//logic.setSqlCmd(&sqlCmd);
+	//ClientNet net(&logic);
+	//logic.SetNet(&net);
+	//logic.userLogin("admin", "12345");
+	return a.exec();	
 }
 
 

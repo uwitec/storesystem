@@ -30,9 +30,3 @@ logger1.info('How quickly daft jumping zebras vex.')
 logger2.warning('Jail zesty vixen who grabbed pay from quack.')
 logger2.error('The five boxing wizards jump quickly.')
 '''
-s = set()
-s.add('one')
-s.add('two')
-s.add('one')
-s.remove('two')
-print s

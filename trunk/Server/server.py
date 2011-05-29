@@ -22,6 +22,7 @@ class Server(asyncore.dispatcher):
         '''客户端连接'''
         conn, addr = self.accept()
         self.logger.info("accept new client")
+        print "accept new client"
         client = ClientAgent(conn, self)
         
     def handle_connect(self):
@@ -40,6 +41,7 @@ class Server(asyncore.dispatcher):
     
     def process_cmd(self, client, cmd_obj):
         res = self.logic.process_cmd_obj(cmd_obj)
+        print res
         if res:
             client.add_sentbuf(cmd.pack(res))
 
@@ -67,7 +69,7 @@ class ClientAgent(asyncore.dispatcher):
         msg, index = cmd.get_msg_from_fmt(self.recvbuf)
         if msg:
             cmd_obj = cmd.unmarshal(msg)
-            #print cmd_obj
+            print cmd_obj
             self.recvbuf = self.recvbuf[index:]
             self.server.process_cmd(self, cmd_obj)
     

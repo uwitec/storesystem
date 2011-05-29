@@ -1,5 +1,8 @@
 #include <QtGui>
 #include <QTcpSocket>
+#include <QString>
+#include <list>
+#include <vector>
 #include "TypeDefine.h"
 #include "LogManager.h"
 #include "SConvert.h"

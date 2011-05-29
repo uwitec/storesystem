@@ -2,6 +2,11 @@
 #include <string>
 #include <sstream>
 #include <QString>
+#define Q_To_CStr(qStr)\
+	qStr.toLocal8Bit().data()
+#define CStr_To_Q(cStr)\
+	QString::fromLocal8Bit(cStr)
+
 class SConvert
 {
 public:

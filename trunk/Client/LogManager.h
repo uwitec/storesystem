@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <QMutex>
 #include "Log.h"
 class LogManager
 {
@@ -9,7 +10,8 @@ public:
 	// 获取默认的日志类
 	Log* getDefaultLog();
 	// 获取特定的日志类
-	Log* getLog(const char* name);
+	Log* getLog(const char* name, LogLevel level = LogLevel_Debug,
+				bool isStdActived = false);
 protected:
 	LogManager(void);
 	static LogManager* pLogManager;
@@ -17,4 +19,5 @@ protected:
 	Log* m_pDefaultLog;
 	typedef std::map<std::string, Log*> LogDict;
 	LogDict m_logDict;
+	static QMutex mutex;
 };

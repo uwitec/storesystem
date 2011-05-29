@@ -6,20 +6,20 @@ from purchase import *
 from return_order import *
 from sale import *
 from user import *
+from Tkinter import Pack
 
 class Cmd(object):
     '''SQL命令'''
     def __init__(self):
         self.cmd_type = ""
         self.cmd_table = ""
-        self.cmd_object = None
-        self.cmd_condition = None
+        self.cmd_command = ""
     
-    def set_cmd_object(self, cmd_object):
-        '''设置操作的对象'''
-        self.cmd_object = cmd_object
-        #print 'set_cmd_object'
-    
+    def set_cmd_table(self, cmd_table):
+        '''设置操作的表格'''
+        # cmd_table[string], 表格的名字
+        self.cmd_table = cmd_table
+        
     def set_cmd_type(self, cmd_type):
         '''设置命令的类型'''
         # cmd_type[string],
@@ -31,31 +31,35 @@ class Cmd(object):
         #    logout,退出
         if cmd_type in db_global.Cmd_Type:
             self.cmd_type = cmd_type
-        
     
-    def set_cmd_condition(self, cmd_condition):
-        '''设置条件'''
-        # cmd_condition[string], 条件
-        #    根据条件来构造where后面的语句
-        self.cmd_condition = cmd_condition
+    def set_cmd_command(self, command):
+        self.cmd_command = command
     
     def __repr__(self):
         text = ""
         text += "cmd_type:%s " % self.cmd_type
         text += "cmd_table:%s " % self.cmd_table
-        text += "cmd_condition:%s " % self.cmd_condition
-        text += "cmd_object:%s " % self.cmd_object        
+        text += "cmd_command:%s " % self.cmd_command    
         return text
 
 class CmdData(object):
     '''SQL命令的查询结果'''
     
     def __init__(self):
-        pass
+        self.cmd_type = ""      # 命令
+        self.cmd_table = ""     # 操作表格
+        self.cmd_result = None  # 操作结果
+    
+    def __repr__(self):
+        text = "type:%s table:%s res:%s" % (self.cmd_type, 
+                    self.cmd_table, self.cmd_result)
+        return text
 
-def get_cmd(table_name):
+def get_cmd(table_name, cmd_type, command):
     cmd = Cmd()
     cmd.cmd_table = table_name
+    cmd.cmd_type = cmd_type
+    cmd.cmd_command = command
     return cmd
 
 fmt_string = ("[*-&*", "*&-*]")
@@ -98,18 +102,18 @@ def unmarshal(cmd_msg):
 
 def pack(cmd):
     # cmd[Cmd(object)], Cmd对象
+    # return[string], 返回string
     msg = marshal(cmd)
     return fmt_msg(msg)
-    
-if __name__ == "__main__":
-    p = Product()
-    strp = cPickle.dumps(p)
-    #print strp
-    u = User()
-    stru = cPickle.dumps(u)
-    print cPickle.loads(strp + stru)
-    print cPickle.loads(stru)
-    
+
+def get_cmd_msg(table_name, cmd_type, command):
+    # return[string]，返回SQL命令网络消息
+    cmd_obj = get_cmd(table_name, cmd_type, command)
+    cmd_msg = pack(cmd_obj)
+    #print cmd_msg
+    return cmd_msg
+
+if __name__ == "__main__":    
     def test_fmt_msg():
         msg = "select from good"
         fmtMsg = fmt_msg(msg)
@@ -127,6 +131,9 @@ if __name__ == "__main__":
         strc = marshal(c)
         print strc
         c = unmarshal(strc)
-        print c
+        print c    
+    #marshal_test()
     
-    marshal_test()
+    def get_cmd_msg_test():
+        get_cmd_msg("user", "login", "select * from user")
+    #get_cmd_msg_test()

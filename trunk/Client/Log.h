@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
-#include <string>		
+#include <string>	
+#include <QMutex>
 enum LogLevel
 {
 	LogLevel_Debug = 0,	
@@ -13,11 +14,13 @@ class Log
 {
 	friend class LogManager;
 public:
-	Log(std::ostream& stream, LogLevel level = LogLevel_Debug);
+	Log(std::ostream& stream, LogLevel level = LogLevel_Debug,
+		bool isStdActived=false);
 	virtual ~Log(void);
 	void setOutStream(std::ostream& stream);
 	void setStdStreamActive(bool isActived);
 	void setLogLevel(LogLevel level = LogLevel_Debug);
+	void setMutex(QMutex* pMutex){ m_pMutex = pMutex; }
 	void debug(const std::string& msg);	
 	void warning(const std::string& msg);	
 	void error(const std::string& msg);	
@@ -29,6 +32,7 @@ protected:
 	std::string m_name;			// 日志名字
 	LogLevel m_logLevel;		// 日志等级
 	std::ostream* m_pStream;	// 日志输出流
+	QMutex* m_pMutex;
 	std::ostream* m_pStdStream;	// 控制台
 	bool m_isStdActived;
 };
