@@ -12,9 +12,9 @@ class StoreSystem : public QMainWindow
 public:
 	StoreSystem(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~StoreSystem();
-
+	MainWidget* getMainWidget(){ return m_pMainWidget; }
 protected:
-	MainWidget* m_pMainWidget;
+	MainWidget* m_pMainWidget;	
 
 private:
 	Ui::StoreSystemClass ui;

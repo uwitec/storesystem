@@ -2,8 +2,9 @@
 #include "Log.h"
 #include "LogManager.h"
 #include <iostream>
-Log::Log(std::ostream& stream, LogLevel level)
-: m_pStream(&stream), m_logLevel(level), m_isStdActived(false)
+Log::Log(std::ostream& stream, LogLevel level, bool isStdActived)
+:	m_pStream(&stream), m_logLevel(level),
+	m_isStdActived(isStdActived), m_pMutex(NULL)
 {
 	m_pStdStream = &std::cout;
 }
@@ -29,7 +30,7 @@ void Log::setLogLevel(LogLevel level)
 
 void Log::debug(const std::string& msg)
 {
-	if( m_logLevel <= LogLevel_Debug )
+	//if( m_logLevel <= LogLevel_Debug )
 		this->logMessage(msg, LogLevel_Debug);
 }
 
@@ -71,7 +72,14 @@ void Log::setLogName(const char* name)
 void Log::logMessage(const std::string& msg, LogLevel level)
 {
 	std::string text = this->decorate(msg, level);
-	(*m_pStream)<<text<<std::endl;
-	if( m_isStdActived )
-		(*m_pStdStream)<<text<<std::endl;
+	if( m_pMutex )
+	{
+		m_pMutex->lock();
+		//printf("locked\n");
+		(*m_pStream)<<text<<std::endl;
+		if( m_isStdActived )
+			(*m_pStdStream)<<text<<std::endl;
+		//printf("unlock\n");
+		m_pMutex->unlock();
+	}
 }

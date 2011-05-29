@@ -2,6 +2,7 @@
 import sqlite3
 import os
 import log
+from distutils.cmd import Command
 class DataBase(object):
     
     def __init__(self, filename):
@@ -33,7 +34,9 @@ class DataBase(object):
 
     def get_cursor(self):
         ''''''
-        return self.con.cursor()
+        cursor = self.con.cursor()
+        #cursor.row_factory = sqlite3.Row
+        return cursor
     
     def safe_execute(self, command):
         '''安全地执行SQL语句'''
@@ -82,7 +85,7 @@ class DataBase(object):
         CREATE TABLE user(
             name      TEXT NOT NULL,
             password  TEXT NOT NULL,
-            authority INTEGER NOT NULL
+            author    INTEGER NOT NULL
         );            
         """
         cursor.execute(command)
@@ -103,7 +106,8 @@ class DataBase(object):
             price_nw  INTEGER,
             price_ww  INTEGER,
             fee_other INTEGER
-            );"""
+            );
+        """
         cursor.execute(command)
     
     def __create_factory_table(self, cursor):
@@ -175,22 +179,65 @@ class DataBase(object):
 if __name__ == "__main__":
     def build_data():
         db = DataBase("sheng.db")
-        import common.user
-        user_list = [
-            ("admin", "12345", 0),
-            ("user1", "67890", 1)
-        ]
-        #db.safe_executemany("insert into user values(?, ?, ?)", user_list)
-        #db.safe_execute("select * from user")
-        #cursor = db.get_cursor()
-        #cursor.execute("select * from user")
-        #for row in cursor.fetchall():
-        #    print row
+        #build_all_data(db)
         select_user(db)
+        select_product(db)
     
     def select_user(db):
         cursor = db.get_cursor()
         cursor.execute("select * from user where name=? and password=?", ("admin", 12345))
         for row in cursor.fetchall():
+            print row        
+    
+    def build_all_data(db):
+        import common.user
+        user_list = [
+            ("admin", "12345", 0),
+            ("user1", "67890", 1)
+        ]
+        db.safe_executemany("insert into user values(?, ?, ?)", user_list)
+        
+        import common.product
+        product_list = [
+            ("牙膏".decode('gbk'), "日用品".decode('gbk'), 0, 15, "2011-5-5", 1000, 1100, 1200, 100),
+            ("水杯".decode('gbk'), "毒品".decode('gbk'), 0, 23, "2011-6-6", 500, 600, 700, 100),
+            ("《C++编程》".decode('gbk'), "书籍".decode('gbk'), 3, 4, "2011-7-7", 4000, 4100, 4400, 500)
+        ]
+        #db.safe_executemany("insert into product values(null, ?, ?, ?, ?, ?, ?, ?, ?, ?)", product_list)
+        
+    def select_product(db):
+        cursor = db.get_cursor()
+        cursor.execute("select * from product where name=?", ("牙膏".decode('gbk'),))
+        for row in cursor:
+            print row["id"], row["name"].encode("gbk"), row["type"].encode("gbk")
             print row
     build_data()
+    
+    def shortCutMethod():
+        import sqlite3
+        
+        persons = [
+                   ("Hugo", "Boss"),
+                   ("Calvin", "Klein")
+                   ]
+        
+        con = sqlite3.connect(":memory:")
+        
+        # Create the table
+        con.execute("create table person(firstname, lastname)")
+        
+        # Fill the table
+        con.executemany("insert into person(firstname, lastname) values (?, ?)", persons)
+        cursor = con.cursor()
+        command = "update person set lastname=?, firstname=? where firstname='Hugo'"
+        cursor.execute(command, ("sheng", 'chen'))
+        #print cursor.rowcount
+        print cursor.fetchall()
+        where = command[command.find('where'):]
+        print where
+        #cursor = con.cursor()
+        cursor.execute("select * from person ")
+        for row in cursor:
+            print row
+    #shortCutMethod()
+    #build_data()

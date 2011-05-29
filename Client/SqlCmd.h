@@ -1,5 +1,6 @@
 #pragma once
 #include "PyInterface.h"
+#include "Tables.h"
 class Logic;
 enum SqlTable
 {
@@ -26,15 +27,37 @@ public:
 	virtual ~SqlCmd(void);
 	void setLogic(Logic* pLogic){ m_pLogic = pLogic; }
 	void login(const char* userName, const char* password);
+	// 获取SQL命令网络消息
+	// @param tableName, 表格名称
+	// @param cmdType, 操作名称
+	// @param command, SQL语句
+	// @return 返回值，可直接发送的网络消息
+	QString getCmdMsg(const QString& tableName,
+		const QString& cmdType,
+		const QString& command);
+	// 提取网络消息中的完整消息
+	// @param replyMsg, 网络消息
+	// @param fullMsg, 传出参数，完整的网络消息
+	// @param hadCut, 传出参数，已截取的长度
+	void cutReplyMsg(const QString& replyMsg,
+					 QString& fullMsg,
+					 int32& hadCut);
+	// 提取完整消息中的CmdData对象
+	// @param fullMsg, 完整的网络消息，必须是cutReplyMsg的第二个传出参数
+	// @param tableName, 传出参数，提取出的表格名
+	// @param cmdType, 传出参数，提取出的命令类型
+	PyObjectPtr parseCmdData(const QString& fullMsg,
+					 QString& tableName,
+					 QString& cmdType);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 bool& isLogined, int32& author);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 UserList& userList);
+	void parseCmdDataResult(PyObjectPtr& cmb_obj,
+					 int32& value);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 ProductPtrList& productList);
 protected:
-	// 调用模块函数
-	// @param pyFuncObj, 函数对象
-	// @param fmt, 参数格式, s:字符串, i:整型, f:单精度浮点, d:双精度浮点
-	//						 o:PyObject*
-	// @param ...，可变参数
-	// @remark, 与printf用法类似
-	// @return 返回值， 函数调用结果
-	PyObjectPtr callFunction(PyObjectPtr& pyFuncObj, const char* fmt, ...);
 	// 获取命令对象
 	// @param tableName, 表名
 	// @param cmdType, 命令名
@@ -43,7 +66,7 @@ protected:
 	PyObjectPtr getCmdObject(const char* tableName,
 							 const char* cmdType,
 							 const char* condition,
-							 PyObjectPtr& object);
+							 PyObjectPtr& object);	
 	void executeCmd(const PyObjectPtr& cmd_obj);
 	PyInterface m_py;
 	Log* m_pLog;

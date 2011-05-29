@@ -2,6 +2,7 @@
 #include "LogManager.h"
 
 LogManager* LogManager::pLogManager = NULL;
+QMutex LogManager::mutex;
 
 LogManager::LogManager(void)
 : m_pStream(NULL), m_pDefaultLog(NULL)
@@ -33,6 +34,7 @@ LogManager& LogManager::getSingleton()
 		pLogManager->m_pStream = new std::ofstream("log.log");
 		pLogManager->m_pDefaultLog = new Log(*pLogManager->m_pStream);
 		pLogManager->m_pDefaultLog->setLogName("DefaultLog");
+		pLogManager->m_pDefaultLog->setMutex(&mutex);
 	}
 	return *pLogManager;
 }
@@ -42,16 +44,17 @@ Log* LogManager::getDefaultLog()
 	return m_pDefaultLog;
 }
 
-Log* LogManager::getLog(const char* name)
-{
+Log* LogManager::getLog(const char* name, LogLevel level, bool isStdActived)
+{	
 	std::string logName = name;
 	LogDict::iterator itr = m_logDict.find(logName);
 	Log* log;
 	if( itr == m_logDict.end() )
 	{
-		log = new Log(*m_pStream);
+		log = new Log(*m_pStream, level, isStdActived);
 		m_logDict[logName] = log;
 		log->setLogName(name);
+		log->setMutex(&mutex);
 	}
 	else
 		log = itr->second;

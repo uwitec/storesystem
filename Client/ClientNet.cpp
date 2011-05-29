@@ -2,21 +2,26 @@
 #include <QSettings>
 #include "ClientNet.h"
 #include "SConvert.h"
-ClientNet::ClientNet(void)
-: m_isConnected(false), m_sentBuf("")
+#include "Logic.h"
+ClientNet::ClientNet(Logic* pLogic)
+:	m_isConnected(false), m_sentBuf(""), m_recvBuf(""),
+	m_pLogic(pLogic)
 {
 	m_pLog = LogManager::getSingleton().getLog("ClientNet");
 	// 打开控制台输出开头-注：正式发布时不打开
 	m_pLog->setStdStreamActive(true);
 	m_pTcpSocket = new QTcpSocket(this);
+	// 添加网络消息回调函数
 	connect( m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-			 this, SLOT(errorHandle(QAbstractSocket::SocketError)) );
+			 this, SLOT(handleError(QAbstractSocket::SocketError)) );
 	connect( m_pTcpSocket, SIGNAL(connected()),
-			 this, SLOT(connectedHandle()) );
+			 this, SLOT(handleConnected()) );
+	connect( m_pTcpSocket, SIGNAL(readyRead()),
+			 this, SLOT(handleReadyRead()) );
 	QSettings ini("config.ini", QSettings::IniFormat);
 	QString ip = ini.value("ip").toString();
 	int32 port = ini.value("port").toInt();
-	m_pLog->info(std::string("connect to ") + SConvert::toCStr(ip) + ":" + SConvert::toString(port));
+	m_pLog->info(std::string("connect to ") + ip.toLocal8Bit().data() + ":" + SConvert::toString(port));
 	m_pTcpSocket->connectToHost(ip, port);
 }
 
@@ -32,7 +37,13 @@ void ClientNet::send( const char* msg )
 	this->send();	
 }
 
-void ClientNet::errorHandle(QAbstractSocket::SocketError socketError)
+void ClientNet::send(const QString& msg)
+{
+	m_sentBuf += msg;
+	this->send();
+}
+
+void ClientNet::handleError(QAbstractSocket::SocketError socketError)
 {
 	switch (socketError) {
 	 case QAbstractSocket::RemoteHostClosedError:
@@ -49,11 +60,24 @@ void ClientNet::errorHandle(QAbstractSocket::SocketError socketError)
 	}
 }
 
-void ClientNet::connectedHandle()
+void ClientNet::handleConnected()
 {
 	m_pLog->info("connect to server successfully.");
 	m_isConnected = true;
 	this->send();
+}
+
+void ClientNet::handleReadyRead()
+{
+	m_recvBuf += m_pTcpSocket->readAll();
+	//m_pLog->debug(m_recvBuf.toLocal8Bit().data());
+	if( m_pLogic != NULL )
+	{
+		//m_pLogic->test();
+		int32 hadCut = m_pLogic->parseReplyMsg(m_recvBuf);
+		if( hadCut > 0 )
+			m_recvBuf = m_recvBuf.mid(hadCut);
+	}
 }
 
 void ClientNet::send()

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "StoreSystem.h"
-
+#include "SConvert.h"
 StoreSystem::StoreSystem(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
