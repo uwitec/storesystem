@@ -19,19 +19,6 @@ SqlCmd::~SqlCmd(void)
 {
 }
 
-void SqlCmd::login(const char* userName, const char* password)
-{
-	// 获取python login对象
-	PyObjectPtr user_class = m_py.getModuleFunction("User");
-	PyObjectPtr user_obj = m_py.callFunction( user_class, "" );
-	m_py.setObjAttrString(user_obj, "name", userName);
-	m_py.setObjAttrString(user_obj, "password", password);
-
-	// 获取Cmd对象
-	PyObjectPtr cmd_obj = this->getCmdObject( kTableName[SqlTable_User], kSqlCmdTypeName[SqlCmdType_Login], "", user_obj );
-	this->executeCmd( cmd_obj );
-}
-
 QString SqlCmd::getCmdMsg(const QString& tableName,
 	const QString& cmdType, const QString& command)
 {
@@ -49,7 +36,7 @@ void SqlCmd::cutReplyMsg(const QString& replyMsg, QString& fullMsg, int32& hadCu
 		fullMsg = "";
 	else
 		fullMsg = PyString_AsString(PyTuple_GetItem(res.get(), 0));
-	m_pLog->debug(Q_To_CStr(fullMsg));
+	//m_pLog->debug(Q_To_CStr(fullMsg));
 }
 
 PyObjectPtr SqlCmd::parseCmdData(const QString& fullMsg,
@@ -57,9 +44,17 @@ PyObjectPtr SqlCmd::parseCmdData(const QString& fullMsg,
 								 QString& cmdType)
 {
 	PyObjectPtr unmarshal_func = m_py.getModuleFunction("unmarshal");
+	
 	PyObjectPtr cmd_data_obj = m_py.callFunction(unmarshal_func, "s", Q_To_CStr(fullMsg));
+	if( cmd_data_obj.get() == NULL )
+	{
+		m_pLog->error("parseCmdData->cmd_data_obj is NULL.");
+		return PyObjectPtr::PyObjectPtrNull;
+	}
 	tableName = m_py.getObjAttrString(cmd_data_obj, "cmd_table");
+	
 	cmdType = m_py.getObjAttrString(cmd_data_obj, "cmd_type");
+	
 	return cmd_data_obj;
 }
 
@@ -80,7 +75,9 @@ void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, UserList& userList)
 	for( uint32 i = 0; i < list_size; ++i )
 	{
 		PyObjectPtr item(PyList_GetItem(list_res.get(), i));
+		Py_XINCREF(item.get());
 		User user;
+		user.id = m_py.getObjAttrInt(item, "id");
 		user.name = m_py.getObjAttrString(item, "name");
 		user.password = m_py.getObjAttrString(item, "password");
 		user.authority = m_py.getObjAttrInt(item, "author");
@@ -97,6 +94,7 @@ void SqlCmd::parseCmdDataResult(PyObjectPtr& cmb_obj, int32& value)
 
 void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, ProductPtrList& productList)
 {
+	m_pLog->debug("parseCmdDataResult->ProductPtrList");
 	ProductPtrList::iterator itr = productList.begin();
 	ProductPtrList::iterator end = productList.end();
 	while( itr != end )
@@ -109,32 +107,52 @@ void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, ProductPtrList& productLis
 	for( uint32 i = 0; i < list_size; ++i )
 	{
 		PyObjectPtr item(PyList_GetItem(list_res.get(), i));
-		Product* pPro = new Product;
-		pPro->id = m_py.getObjAttrInt(item, "id");
-		pPro->name = QString::fromLocal8Bit(m_py.getObjAttrString(item, "name"));
-		productList.push_back(pPro);
+		Py_XINCREF(item.get());
+		Product* pProduct = new Product;
+		pProduct->id = m_py.getObjAttrInt(item, "id");
+		pProduct->name = m_py.getObjAttrString(item, "name");
+		pProduct->type = m_py.getObjAttrString(item, "type");
+		pProduct->MF_id = m_py.getObjAttrInt(item, "MF_id");
+		pProduct->count = m_py.getObjAttrInt(item, "count");
+		pProduct->date = m_py.getObjAttrString(item, "date");
+		pProduct->price_buy = m_py.getObjAttrInt(item, "price_buy");
+		pProduct->price_nw = m_py.getObjAttrInt(item, "price_nw");
+		pProduct->price_ww = m_py.getObjAttrInt(item, "price_ww");
+		pProduct->fee_other = m_py.getObjAttrInt(item, "fee_other");
+		productList.push_back(pProduct);
 	}
 }
-PyObjectPtr SqlCmd::getCmdObject(
-	const char* tableName, const char* cmdType,
-	const char* condition, PyObjectPtr& object)
+
+void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, FactoryPtrList& factoryPtrList)
 {
-	// 获取Cmd对象
-	PyObjectPtr get_cmd_func = m_py.getModuleFunction("get_cmd");
-	PyObjectPtr cmd_obj = m_py.callFunction(get_cmd_func, "s", tableName);
+	m_pLog->debug("parseCmdDataResult->FactoryPtrList");
 
-	// 调用set_cmd_type函数
-	PyObjectPtr set_cmd_type_func(m_py.getFunction(cmd_obj, "set_cmd_type"), "set_cmd_type");
-	m_py.callFunction( set_cmd_type_func, "s", cmdType );
-
-	// 调用set_cmd_object函数
-	PyObjectPtr set_cmd_object_func = m_py.getFunction(cmd_obj, "set_cmd_object");
-	m_py.callFunction( set_cmd_object_func, "o", object.get() );
-
-	// 调用set_cmd_condition函数
-	PyObjectPtr set_cmd_condition_func = m_py.getFunction(cmd_obj, "set_cmd_condition");
-	m_py.callFunction( set_cmd_condition_func, "s", condition );
-	return cmd_obj;
+	FactoryPtrList::iterator itr = factoryPtrList.begin();
+	FactoryPtrList::iterator end = factoryPtrList.end();
+	while( itr != end )
+	{
+		delete *itr;
+	}
+	factoryPtrList.clear();
+	PyObjectPtr list_res = m_py.getObjAttrObject(cmd_obj, "cmd_result");
+	uint32 list_size = PyList_GET_SIZE(list_res.get());
+	for( uint32 i = 0; i < list_size; ++i )
+	{
+		PyObjectPtr item(PyList_GetItem(list_res.get(), i));
+		Py_XINCREF(item.get());
+		FactoryPtr pFactory = new Factory;
+		pFactory->id = m_py.getObjAttrInt(item, "id");
+		pFactory->name = m_py.getObjAttrString(item, "name");
+		pFactory->contact = m_py.getObjAttrString(item, "contact");
+		pFactory->post = m_py.getObjAttrString(item, "post");
+		pFactory->phone = m_py.getObjAttrString(item, "phone");
+		pFactory->zip_code = m_py.getObjAttrString(item, "zip_code");
+		pFactory->addr = m_py.getObjAttrString(item, "addr");
+		pFactory->email = m_py.getObjAttrString(item, "email");
+		pFactory->card_type = m_py.getObjAttrString(item, "card_type");
+		pFactory->card_num = m_py.getObjAttrString(item, "card_num");
+		factoryPtrList.push_back(pFactory);
+	}
 }
 
 void SqlCmd::executeCmd(const PyObjectPtr& cmd_obj)

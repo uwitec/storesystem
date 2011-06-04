@@ -3,7 +3,7 @@
 class ReturnOrder(object):
     '''退货单'''
     
-    def __init__(self):
+    def __init__(self, recordRow=None):
         self.id = None          # 货单id
         self.product_id = None  # 产品
         self.count = 0          # 产品数量

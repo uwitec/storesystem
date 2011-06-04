@@ -38,19 +38,23 @@ class DataBase(object):
         #cursor.row_factory = sqlite3.Row
         return cursor
     
-    def safe_execute(self, command):
+    def safe_execute(self, command, cursor=None):
         '''安全地执行SQL语句'''
         try:
-            self.con.execute(command)
+            if not cursor:
+                cursor = self.con
+            cursor.execute(command)
             self.con.commit()
         except Exception, e:
             self.logger.error('safe_execute->command=%s;%s' % (command, e))
             self.rollback()
     
-    def safe_executemany(self, command, obj_list):
+    def safe_executemany(self, command, obj_list, cursor=None):
         '''执行多个SQL语句'''
         try:
-            self.con.executemany(command, obj_list)
+            if not cursor:
+                cursor = self.con
+            cursor.executemany(command, obj_list)
             self.con.commit()
         except Exception, e:
             self.logger.error('safe_executemany->command=%s;%s' % (command, e))
@@ -83,10 +87,11 @@ class DataBase(object):
         '''创建用户表'''
         command = """
         CREATE TABLE user(
+            id        INTEGER PRIMARY KEY,
             name      TEXT NOT NULL,
             password  TEXT NOT NULL,
             author    INTEGER NOT NULL
-        );            
+        );
         """
         cursor.execute(command)
     
@@ -158,7 +163,7 @@ class DataBase(object):
             seller    TEXT,
             sale_addr TEXT,
             buyer_name TEXT,
-            buyer_tel  TEXT           
+            buyer_tel  TEXT
         );
         """
         cursor.execute(command)
@@ -195,7 +200,7 @@ if __name__ == "__main__":
             ("admin", "12345", 0),
             ("user1", "67890", 1)
         ]
-        db.safe_executemany("insert into user values(?, ?, ?)", user_list)
+        #db.safe_executemany("insert into user values(?, ?, ?)", user_list)
         
         import common.product
         product_list = [
@@ -207,7 +212,10 @@ if __name__ == "__main__":
         
     def select_product(db):
         cursor = db.get_cursor()
-        cursor.execute("select * from product where name=?", ("牙膏".decode('gbk'),))
+        #cursor.execute("delete from product where id = 2")
+        #cursor.execute("insert into product values(null, 'one', 'number', 0, 17, '2010-10-10', 100, 1100, 1200, 100)")
+        #cursor.execute("select * from product where row_number() == 2")
+        cursor.execute("select * from product")
         for row in cursor:
             print row["id"], row["name"].encode("gbk"), row["type"].encode("gbk")
             print row

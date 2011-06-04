@@ -67,11 +67,12 @@ class ClientAgent(asyncore.dispatcher):
         self.recvbuf += self.recv(8192)
         self.logger.debug(self.recvbuf)
         msg, index = cmd.get_msg_from_fmt(self.recvbuf)
-        if msg:
+        while msg:
             cmd_obj = cmd.unmarshal(msg)
             print cmd_obj
             self.recvbuf = self.recvbuf[index:]
             self.server.process_cmd(self, cmd_obj)
+            msg, index = cmd.get_msg_from_fmt(self.recvbuf)
     
     def handle_write(self):
         sent = self.send(self.sentbuf)

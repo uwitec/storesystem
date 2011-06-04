@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'StoreSystem.ui'
 **
-** Created: Sat May 28 14:16:12 2011
+** Created: Sat Jun 4 08:06:16 2011
 **      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!

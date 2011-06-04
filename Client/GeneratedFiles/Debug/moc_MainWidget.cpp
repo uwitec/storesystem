@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'MainWidget.h'
 **
-** Created: Sat May 28 12:49:13 2011
+** Created: Sat Jun 4 00:22:34 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -24,18 +24,26 @@ static const uint qt_meta_data_MainWidget[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
+ // slots: signature, parameters, type, tag, flags
+      12,   11,   11,   11, 0x0a,
+      35,   11,   11,   11, 0x0a,
+      58,   11,   11,   11, 0x0a,
+      81,   11,   11,   11, 0x0a,
+
        0        // eod
 };
 
 static const char qt_meta_stringdata_MainWidget[] = {
-    "MainWidget\0"
+    "MainWidget\0\0onInsertProductClick()\0"
+    "onUpdateProductClick()\0onInsertFactoryClick()\0"
+    "onUpdateFactoryClick()\0"
 };
 
 const QMetaObject MainWidget::staticMetaObject = {
@@ -65,6 +73,16 @@ int MainWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QTabWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: onInsertProductClick(); break;
+        case 1: onUpdateProductClick(); break;
+        case 2: onInsertFactoryClick(); break;
+        case 3: onUpdateFactoryClick(); break;
+        default: ;
+        }
+        _id -= 4;
+    }
     return _id;
 }
 QT_END_MOC_NAMESPACE

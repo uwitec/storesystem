@@ -2,7 +2,7 @@
 #include "UserManager.h"
 
 UserManager::UserManager(void)
-:	m_pGui(NULL)
+: TableManager()
 {
 	m_pLog = LogManager::getSingleton().getLog("UserManager");
 	m_pLog->setStdStreamActive(true);
@@ -19,6 +19,14 @@ QString UserManager::loginCmd(const QString& name, const QString& password)
 	return cmd;
 }
 
+QString UserManager::insertCmd(const User& user)
+{
+	const User& u = user;
+	QString cmd = QString("insert into user values(null, "
+		"'%1', '%2', %3)").arg(u.name).arg(u.password).arg(u.authority);
+	return cmd;
+}
+
 QString UserManager::searchCmd(const QString& name)
 {
 	QString cmd = QString::fromLocal8Bit("select * from user ");
@@ -27,27 +35,29 @@ QString UserManager::searchCmd(const QString& name)
 	return cmd;
 }
 
-QString UserManager::updateCmd(const QString& name, const QString& password, int32 author)
+QString UserManager::updateCmd(const User& user)
 {
 	// name为空，不执行SQL命令
-	if( name.isNull() || name.isEmpty() )
-		return name;
+	if( user.name.isNull() || user.name.isEmpty() )
+		return "";
 	// password 和 author 同时不合法
-	if( (password.isNull() || password.isEmpty()) && author == -1 )
+	if( user.password.isEmpty() && user.authority == -1 )
 		return "";
 	// author不合法
-	if( author != -1 && author != 0 && author != 1 )
+	if( user.authority != -1 && user.authority != 0 && user.authority != 1 )
 		return "";
 	QString set = "";
-	if( password.size() > 0 )
-		set = QString("password='%1'").arg(password);
+	if( user.password.size() > 0 )
+		set = QString("password='%1'").arg(user.password);
 	char dot = ' ';
 	if( set.size() > 0 )
 		dot = ',';
-	if( author != -1 )
-		set += QString("%1author=%2").arg(dot).arg(author);
-	QString cmd = QString("update user set %1 where name='%2'").arg(set).arg(name);
+	if( user.authority != -1 )
+		set += QString("%1author=%2").arg(dot).arg(user.authority);
+	QString cmd = QString("update user set %1 where name='%2'").arg(set).arg(user.name);
 	return cmd;
+		
+
 }
 
 void UserManager::loginCallBack(bool isLogined, int32 author)
@@ -60,6 +70,21 @@ void UserManager::loginCallBack(bool isLogined, int32 author)
 	{
 		m_pLog->info("login failed");
 	}
+}
+
+void UserManager::insertCallBack(const UserList& userList)
+{
+	if( m_pGui )
+	{
+		UserList::const_iterator itr = userList.begin();
+		UserList::const_iterator end = userList.end();
+		while( itr != end )
+		{
+			m_pGui->addUserData(*itr);
+			++itr;
+		}
+	}
+	m_pLog->debug("insertCallBack");
 }
 
 void UserManager::searchCallBack(const UserList& userList)

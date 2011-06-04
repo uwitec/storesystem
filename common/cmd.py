@@ -80,7 +80,7 @@ def get_msg_from_fmt(fmtMsg):
         return None, -1
     beg_ind += len(fmt_string[0])
     
-    end_ind = fmtMsg.find(fmt_string[1])
+    end_ind = fmtMsg.find(fmt_string[1], beg_ind)
     if end_ind < 0:
         return None, -1
     msg = fmtMsg[beg_ind : end_ind]
@@ -98,7 +98,14 @@ def unmarshal(cmd_msg):
     '''对marshal后的序列化字符串，进行反序列化'''
     # cmd_msg[string], marshal的返回值
     # return[Cmd(object)], Cmd对象
-    return cPickle.loads(cmd_msg)
+    cmd_obj = cPickle.loads(cmd_msg)
+    """
+    try:
+        print cmd_obj
+    except Exception, e:
+        print e
+    """
+    return cmd_obj
 
 def pack(cmd):
     # cmd[Cmd(object)], Cmd对象

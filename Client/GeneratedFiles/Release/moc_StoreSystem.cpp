@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'StoreSystem.h'
 **
-** Created: Sun May 29 01:06:49 2011
+** Created: Sat Jun 4 08:06:17 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.3)
 **
 ** WARNING! All changes made in this file will be lost!

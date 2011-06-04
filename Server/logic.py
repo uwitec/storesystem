@@ -10,15 +10,19 @@ class Logic:
         self.db = data.DataBase("sheng.db")
         self.user_mgr = mgr.UserManager(self.db)
         self.product_mgr = mgr.ProductManager(self.db)
+        self.factory_mgr = mgr.FactoryManager(self.db)
         self.purchase_mgr = None
         self.return_order_mgr = None
         self.sale_mgr = None
     
     def process_cmd_obj(self, cmd_obj):
-        if cmd_obj.cmd_table.lower() == "user":
+        cmd_table = cmd_obj.cmd_table.lower()
+        if cmd_table == "user":
             return self.user_mgr.execute_command(cmd_obj)
-        elif cmd_obj.cmd_table.lower() == "product":
+        elif cmd_table == "product":
             return self.product_mgr.execute_command(cmd_obj)
+        elif cmd_table == "factory":
+            return self.factory_mgr.execute_command(cmd_obj)
     
     def build_sql_command(self, cmd_obj):
         pass

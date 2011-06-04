@@ -19,9 +19,14 @@ void TestLogicUserSearch();
 void TestLogicUserUpdate();
 void TestLogicParseReplyMsg();
 void TestLogicProductSearch();
+void TestLogicProductInsert(Logic& logic);
+void TestLogicFactoryInsert(Logic& logic);
 
 // PyInterface测试
 void TestPy();
+
+// 建立基本数据
+void BuildTestData();
 
 
 
