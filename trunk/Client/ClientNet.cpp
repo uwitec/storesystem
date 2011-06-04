@@ -75,9 +75,14 @@ void ClientNet::handleReadyRead()
 	{
 		//m_pLogic->test();
 		int32 hadCut = m_pLogic->parseReplyMsg(m_recvBuf);
-		if( hadCut > 0 )
+		m_pLog->debug(SConvert::toString(hadCut));
+		while( hadCut > 0 )
+		{
 			m_recvBuf = m_recvBuf.mid(hadCut);
+			hadCut = m_pLogic->parseReplyMsg(m_recvBuf);
+		}
 	}
+	//m_pLog->debug("finish cut");
 }
 
 void ClientNet::send()

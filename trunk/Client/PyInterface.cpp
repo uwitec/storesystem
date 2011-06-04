@@ -191,7 +191,8 @@ int32 PyInterface::getObjAttrInt(PyObjectPtr& pyObjPtr, const char* attrName)
 
 const char* PyInterface::getObjAttrString(PyObjectPtr& pyObjPtr, const char* attrName)
 {
-	PyObjectPtr pyAttrName(PyString_FromString(attrName));
+	//printf("%s\n", attrName);
+	PyObjectPtr pyAttrName(PyString_FromString(attrName));	
 	return PyString_AsString(PyObject_GetAttr(pyObjPtr.get(), pyAttrName.get()));
 }
 

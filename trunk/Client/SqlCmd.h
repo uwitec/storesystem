@@ -26,7 +26,6 @@ public:
 	SqlCmd(void);
 	virtual ~SqlCmd(void);
 	void setLogic(Logic* pLogic){ m_pLogic = pLogic; }
-	void login(const char* userName, const char* password);
 	// 获取SQL命令网络消息
 	// @param tableName, 表格名称
 	// @param cmdType, 操作名称
@@ -57,6 +56,8 @@ public:
 					 int32& value);
 	void parseCmdDataResult(PyObjectPtr& cmd_obj,
 					 ProductPtrList& productList);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 FactoryPtrList& factoryPtrList);
 protected:
 	// 获取命令对象
 	// @param tableName, 表名

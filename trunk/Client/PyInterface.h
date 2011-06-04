@@ -52,6 +52,7 @@ public:
 	PyInterface(void);
 	virtual ~PyInterface(void);
 	void loadModule(const char* moduleName);
+	PyObjectPtr getModule(){ return m_pModule; }
 	// 获得模块的函数
 	PyObjectPtr& getModuleFunction(const char* name);
 	// 获得特定模块的函数

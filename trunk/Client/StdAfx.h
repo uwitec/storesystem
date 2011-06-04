@@ -3,6 +3,7 @@
 #include <QString>
 #include <list>
 #include <vector>
+#include <python.h>
 #include "TypeDefine.h"
 #include "LogManager.h"
 #include "SConvert.h"

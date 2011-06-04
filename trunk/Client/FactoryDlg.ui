@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FactoryDlg</class>
+ <widget class="QDialog" name="FactoryDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>FactoryDlg</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="m_pLayout">
+     <item>
+      <layout class="QHBoxLayout" name="m_pNameVLayout">
+       <item>
+        <widget class="QLabel" name="m_pNameLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>厂名：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pNameBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pContactVLayout">
+       <item>
+        <widget class="QLabel" name="m_pContactLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>联系人：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pContactBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pPostVLayout">
+       <item>
+        <widget class="QLabel" name="m_pPostLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>职位：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pPostBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pPhoneVLayout">
+       <item>
+        <widget class="QLabel" name="m_pPhoneLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>联系电话：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pPhoneBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pZipCodeVLayout">
+       <item>
+        <widget class="QLabel" name="m_pZipCodeLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>邮编：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pZipCodeBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pAddrHLayout">
+       <item>
+        <widget class="QLabel" name="m_pAddrLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>地址：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pAddrBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pEmailVLayout">
+       <item>
+        <widget class="QLabel" name="m_pEmailLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>邮箱：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pEmailBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pCardTypeVLayout">
+       <item>
+        <widget class="QLabel" name="m_pCardTypeLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>银行卡类型：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pCardTypeBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pTypeNumVLayout">
+       <item>
+        <widget class="QLabel" name="m_pTypeNumLabel">
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>银行卡卡号：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_pTypeNumBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="m_pBtnVLayout">
+       <item>
+        <widget class="QPushButton" name="m_pAcceptBtn">
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>确定</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="m_pRejectBtn">
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>取消</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
