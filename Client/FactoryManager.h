@@ -13,9 +13,10 @@ public:
 	QString searchAllCmd();
 	QString insertCmd(const Factory& factory);
 	QString updateCmd(const Factory& factory);
-	FactoryPtrList& getFactoryPtrList(){ return m_factoryPtrList; }
+	const FactoryPtr getFactoryPtr(int32 index) const;
+	//FactoryPtrList& getFactoryPtrList(){ return m_factoryPtrList; }
 public:
-	void searchCallBack(const FactoryPtrList& factoryList);
+	void searchCallBack(FactoryPtrList& factoryList);
 	void insertCallBack(FactoryPtrList& factoryList);
 	void updateCallBack(FactoryPtrList& factoryList);
 protected:

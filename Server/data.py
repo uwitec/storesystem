@@ -63,11 +63,11 @@ class DataBase(object):
     def rollback(self):
         '''出现错误时进行回滚'''
         self.con.rollback()
-        self.logger.info('rollback from error')        
+        self.logger.info('rollback from error')
     
     def __create_table(self, db_name):
         '''创建新的数据库，当数据库不存在时调用'''
-        # db_name[string],数据库文件绝对路径
+        # @param db_name[string],数据库文件绝对路径
         
         file = open(db_name, 'w')
         file.close()
@@ -77,11 +77,14 @@ class DataBase(object):
         self.__create_user_table(cursor)
         self.__create_product_table(cursor)
         self.__create_factory_table(cursor)
-        self.__create_purchase_order_table(cursor)
-        self.__create_return_order(cursor)
-        self.__create_sale_order_table(cursor)    
-        cursor.close()
+        self.__create_purchaseS_table(cursor)
+        self.__create_purchaseC_table(cursor)
+        self.__create_saleS_table(cursor)
+        self.__create_saleC_table(cursor)
+        self.__create_returnS_table(cursor)
+        self.__create_returnC_table(cursor)
         conn.commit()
+        cursor.close()        
     
     def __create_user_table(self, cursor):
         '''创建用户表'''
@@ -94,7 +97,7 @@ class DataBase(object):
         );
         """
         cursor.execute(command)
-    
+        
     def __create_product_table(self, cursor):
         '''创建产品数据表'''
         # (ID, 产品名称，类别，厂商ID，数量，日期，
@@ -111,7 +114,7 @@ class DataBase(object):
             price_nw  INTEGER,
             price_ww  INTEGER,
             fee_other INTEGER
-            );
+        );
         """
         cursor.execute(command)
     
@@ -133,50 +136,78 @@ class DataBase(object):
         """
         cursor.execute(command)
     
-    def __create_purchase_order_table(self, cursor):
-        '''创建进货订单数据表'''
+    
+    def __create_purchaseS_table(self, cursor):
+        ''' 进货单条记录'''
         command = """
-        CREATE TABLE purchase_order(
+        CREATE TABLE purchaseS(
             id        INTEGER PRIMARY KEY,
             product_id INTEGER NOT NULL,
             count     INTEGER NOT NULL,
-            date      TEXT,
-            MF_id     INTEGER,
-            price_pc  INTEGER,
+            batch     INTEGER NOT NULL,
             price_pay INTEGER,
             fee_other INTEGER
         );
         """
         cursor.execute(command)
-    
-    def __create_sale_order_table(self, cursor):
-        '''创建销售订单数据表'''
+        
+    def __create_purchaseC_table(self, cursor):
+        ''' 进货记录集合'''
         command = """
-        CREATE TABLE sale_order(
+        CREATE TABLE purchaseC(
             id        INTEGER PRIMARY KEY,
-            type      INTEGER,
             date      TEXT,
-            product_id INTEGER NOT NULL,            
+            factory_id INTEGER,
+            memo      TEXT
+        );
+        """
+        cursor.execute(command)
+    def __create_saleS_table(self, cursor):
+        '''创建销售单条记录表'''
+        command = """
+        CREATE TABLE saleS(
+            id        INTEGER PRIMARY KEY,
+            product_id INTEGER NOT NULL,
             count     INTEGER NOT NULL,
-            price_sell INTEGER,
-            price_pay  INTEGER,
-            seller    TEXT,
-            sale_addr TEXT,
-            buyer_name TEXT,
-            buyer_tel  TEXT
+            batch     INTEGER NOT NULL,
+            price_pay  INTEGER
         );
         """
         cursor.execute(command)
     
-    def __create_return_order(self, cursor):
-        '''创建退货订单'''
+    def __create_saleC_table(self, cursor):
+        '''创建销售记录集合表'''
         command = """
-        CREATE TABLE return_order(
+        CREATE TABLE saleC(
+            id        INTEGER PRIMARY KEY,
+            memo      TEXT,
+            seller    TEXT,
+            date      TEXT,
+            addr      TEXT
+        );
+        """
+        cursor.execute(command)
+ 
+    def __create_returnS_table(self, cursor):
+        '''创建退货单条记录表'''
+        command = """
+        CREATE TABLE returnS(
             id        INTEGER PRIMARY KEY,
             product_id INTEGER NOT NULL,
             count     INTEGER NOT NULL,
-            date      TEXT,
+            batch     INTEGER,
             price_ret INTEGER
+        );
+        """
+        cursor.execute(command)
+    
+    def __create_returnC_table(self, cursor):
+        '''创建退货记录集合表'''
+        command = """
+        CREATE TABLE returnC(
+            id        INTEGER PRIMARY KEY,
+            date      TEXT,
+            memo      TEXT
         );
         """
         cursor.execute(command)

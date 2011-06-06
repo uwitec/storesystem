@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'StoreSystem.ui'
 **
-** Created: Sat Jun 4 08:06:16 2011
+** Created: Sat Jun 4 23:56:47 2011
 **      by: Qt User Interface Compiler version 4.7.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -38,7 +38,7 @@ public:
     {
         if (StoreSystemClass->objectName().isEmpty())
             StoreSystemClass->setObjectName(QString::fromUtf8("StoreSystemClass"));
-        StoreSystemClass->resize(600, 400);
+        StoreSystemClass->resize(800, 600);
         action = new QAction(StoreSystemClass);
         action->setObjectName(QString::fromUtf8("action"));
         centralWidget = new QWidget(StoreSystemClass);
@@ -46,7 +46,7 @@ public:
         StoreSystemClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(StoreSystemClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 23));
+        menuBar->setGeometry(QRect(0, 0, 800, 21));
         menu = new QMenu(menuBar);
         menu->setObjectName(QString::fromUtf8("menu"));
         StoreSystemClass->setMenuBar(menuBar);

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PurchaseDlg</class>
+ <widget class="QDialog" name="PurchaseDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>448</width>
+    <height>336</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>PurchaseDlg</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QGroupBox" name="m_pPurchaseCGroup">
+       <property name="title">
+        <string>进货单</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QVBoxLayout" name="m_pLayout">
+          <item>
+           <layout class="QHBoxLayout" name="m_pIDVLayout">
+            <item>
+             <widget class="QLabel" name="m_pIDLabel">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>批次：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="m_pIDEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pDateVLayout">
+            <item>
+             <widget class="QLabel" name="m_pDateLabel">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>进货日期：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDateEdit" name="m_pDateEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pMF_idVLayout">
+            <item>
+             <widget class="QLabel" name="m_pMF_idLabel">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>进货商家：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="m_pMF_idBox"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pMemoVLayout">
+            <item>
+             <widget class="QLabel" name="m_pMemoLabel">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>备注：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="m_pMemoEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pBtnVLayout">
+            <item>
+             <widget class="QPushButton" name="m_pAcceptCBtn">
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>确定</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_pRejectCBtn">
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>取消</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="m_pPurchaseSGroup">
+       <property name="title">
+        <string>条目</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QVBoxLayout" name="m_pLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="m_pBatchVLayout">
+            <item>
+             <widget class="QLabel" name="m_pBatchLabel">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>批次：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="m_pBatchEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pProductVLayout">
+            <item>
+             <widget class="QLabel" name="m_pProductLabel">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>产品：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="m_pProductIDBox">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pBatchVLayout_2">
+            <item>
+             <widget class="QLabel" name="m_pProductInfoLabel">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>产品信息：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="m_pProductInfoEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pCountVLayout">
+            <item>
+             <widget class="QLabel" name="m_pCountLabel">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>数量：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="m_pCountSpin"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pPricePayLayout">
+            <item>
+             <widget class="QLabel" name="m_pPricePayLabel">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>实付：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="m_pPricePaySpin">
+              <property name="maximum">
+               <double>999999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pFeeOtherLayout">
+            <item>
+             <widget class="QLabel" name="m_pFeeOtherLabel">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>其它费用：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="m_pFeeOtherSpin">
+              <property name="maximum">
+               <double>999999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="m_pBtnSVLayout">
+            <item>
+             <widget class="QPushButton" name="m_pAcceptSBtn">
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>确定</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_pRejectSBtn">
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>取消</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <zorder></zorder>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_pRejectCBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>PurchaseDlg</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>183</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_pRejectSBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>PurchaseDlg</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>360</x>
+     <y>296</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>401</x>
+     <y>328</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

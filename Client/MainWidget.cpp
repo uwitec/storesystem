@@ -2,12 +2,17 @@
 #include "MainWidget.h"
 #include "Logic.h"
 MainWidget::MainWidget(QWidget *parent)
-: QTabWidget(parent), m_pLogic(NULL)
+:	QTabWidget(parent), m_pLogic(NULL),
+	m_iCurPurchaseBatch(-1),
+	m_iCurSaleBatch(-1)
 {
 	ui.setupUi(this);
 	initUserView();
 	initProductView();
 	initFactoryView();
+	initPurchaseView();
+	initSaleView();
+	initCompleteModel();
 	initConnection();
 }
 
@@ -42,7 +47,7 @@ void MainWidget::initProductView()
 	m_pProductModel->setHeaderData(9, org, CStr_To_Q("其它费用"));
 	ui.m_pProductView->setModel(m_pProductModel);
 
-	m_pProductDlg = new ProductDlg(this);
+	m_pProductDlg = new ProductDlg(this);	
 }
 
 void MainWidget::initFactoryView()
@@ -64,16 +69,85 @@ void MainWidget::initFactoryView()
 	m_pFactoryDlg = new FactoryDlg(this);
 }
 
+void MainWidget::initPurchaseView()
+{
+	m_pPurchaseCModel = new QStandardItemModel(0, 4, this);
+	Qt::Orientation org = Qt::Horizontal;
+	m_pPurchaseCModel->setHeaderData(0, org, "id");
+	m_pPurchaseCModel->setHeaderData(1, org, CStr_To_Q("进货日期"));
+	m_pPurchaseCModel->setHeaderData(2, org, CStr_To_Q("进货商家"));
+	m_pPurchaseCModel->setHeaderData(3, org, CStr_To_Q("备注"));
+	ui.m_pPurchaseCView->setModel(m_pPurchaseCModel);
+
+	m_pPurchaseSModel = new QStandardItemModel(0, 6, this);
+	m_pPurchaseSModel->setHeaderData(0, org, "id");
+	m_pPurchaseSModel->setHeaderData(1, org, CStr_To_Q("产品"));
+	m_pPurchaseSModel->setHeaderData(2, org, CStr_To_Q("数量"));
+	m_pPurchaseSModel->setHeaderData(3, org, CStr_To_Q("批次"));
+	m_pPurchaseSModel->setHeaderData(4, org, CStr_To_Q("实付"));
+	m_pPurchaseSModel->setHeaderData(5, org, CStr_To_Q("其它费用"));
+	ui.m_pPurchaseSView->setModel(m_pPurchaseSModel);
+
+	m_pPurchaseDlg = new PurchaseDlg(this);
+}
+
+void MainWidget::initSaleView()
+{
+	m_pSaleCModel = new QStandardItemModel(0, 5, this);
+	Qt::Orientation org = Qt::Horizontal;
+	m_pSaleCModel->setHeaderData(0, org, "id");
+	m_pSaleCModel->setHeaderData(1, org, CStr_To_Q("备注"));
+	m_pSaleCModel->setHeaderData(2, org, CStr_To_Q("经手人"));
+	m_pSaleCModel->setHeaderData(3, org, CStr_To_Q("销售日期"));
+	m_pSaleCModel->setHeaderData(4, org, CStr_To_Q("销售地点"));
+	ui.m_pSaleCView->setModel(m_pSaleCModel);
+
+	m_pSaleSModel = new QStandardItemModel(0, 5, this);
+	m_pSaleSModel->setHeaderData(0, org, "id");
+	m_pSaleSModel->setHeaderData(1, org, CStr_To_Q("产品"));
+	m_pSaleSModel->setHeaderData(2, org, CStr_To_Q("数量"));
+	m_pSaleSModel->setHeaderData(3, org, CStr_To_Q("批次"));
+	m_pSaleSModel->setHeaderData(4, org, CStr_To_Q("实付"));
+	ui.m_pSaleSView->setModel(m_pSaleSModel);
+}
+
+void MainWidget::initCompleteModel()
+{
+	m_pProductDlg->setCompleterModel(m_pProductModel);
+	m_pFactoryDlg->setCompleterModel(m_pFactoryModel);
+
+	QCompleter* pFactoryCompleter = new QCompleter(m_pFactoryModel, this);
+	m_pProductDlg->setFactoryModel(m_pFactoryModel, pFactoryCompleter);
+	m_pPurchaseDlg->setFactoryModel(m_pFactoryModel, pFactoryCompleter);
+
+	QCompleter* pProductCompleter = new QCompleter(m_pProductModel, this);
+	m_pPurchaseDlg->setProductModel(m_pProductModel, pProductCompleter);	
+}
+
 void MainWidget::initConnection()
 {
 	connect( ui.m_pProductAddBtn, SIGNAL(clicked()),
 			 this, SLOT(onInsertProductClick()) );
 	connect( ui.m_pProductUpdBtn, SIGNAL(clicked()),
 			 this, SLOT(onUpdateProductClick()) );
+
 	connect( ui.m_pFactoryAddBtn, SIGNAL(clicked()),
 			 this, SLOT(onInsertFactoryClick()) );
 	connect( ui.m_pFactoryUpdBtn, SIGNAL(clicked()),
 			 this, SLOT(onUpdateFactoryClick()) );
+
+	connect( ui.m_pPurchaseCAddBtn, SIGNAL(clicked()),
+			 this, SLOT(onInsertPurchaseCClick()) );
+	connect( ui.m_pPurchaseCUpdBtn, SIGNAL(clicked()),
+			 this, SLOT(onUpdatePurchaseCClick()) );
+	connect( ui.m_pPurchaseCView, SIGNAL(clicked(const QModelIndex&)),
+			 this, SLOT(onPurchaseCViewClick(const QModelIndex&)) );
+
+	// 进货单条记录
+	connect( ui.m_pPurchaseSAddBtn, SIGNAL(clicked()),
+			 this, SLOT(onInsertPurchaseSClick()) );
+	connect( ui.m_pPurchaseSUpdBtn, SIGNAL(clicked()),
+			 this, SLOT(onUpdatePurchaseSClick()) );
 }
 
 void MainWidget::setUserData(const UserList& userList)
@@ -180,25 +254,176 @@ void MainWidget::onInsertProductClick()
 	}
 }
 
+void MainWidget::setPurchaseCData(const PurchaseCPtrList& purchaseCPtrList)
+{
+	int32 iRowCount = m_pPurchaseCModel->rowCount();
+	m_pPurchaseCModel->removeRows(0, iRowCount);
+	PurchaseCPtrList::const_iterator itr = purchaseCPtrList.begin();
+	PurchaseCPtrList::const_iterator end = purchaseCPtrList.end();
+	while(itr != end)
+	{
+		this->addPurchaseCData(*itr);
+		++itr;
+	}
+}
+
+void setModelData(QStandardItemModel* model, int32 row, const PurchaseCPtr pPurchaseC)
+{
+	model->setData( model->index(row, 0), pPurchaseC->id );
+	model->setData( model->index(row, 1), pPurchaseC->date );
+	model->setData( model->index(row, 2), pPurchaseC->factory_id );
+	model->setData( model->index(row, 3), pPurchaseC->memo );
+}
+
+void MainWidget::addPurchaseCData(const PurchaseCPtr pPurchaseC)
+{
+	uint32 row = m_pPurchaseCModel->rowCount();
+	m_pPurchaseCModel->insertRow(row);
+	setModelData(m_pPurchaseCModel, row, pPurchaseC);
+}
+
+void MainWidget::updatePurchaseCData(const PurchaseCPtr pPurchaseC, int32 row)
+{
+	setModelData(m_pPurchaseCModel, row, pPurchaseC);
+}
+
+void MainWidget::setPurchaseSData(const PurchaseSPtrList& purchaseSPtrList, uint32 batch)
+{
+	// 批次没有改变
+	if(m_iCurPurchaseBatch == batch && 
+	   purchaseSPtrList.size() == m_pPurchaseSModel->rowCount())
+		return;
+	int32 iRowCount = m_pPurchaseSModel->rowCount();
+	m_pPurchaseSModel->removeRows(0, iRowCount);
+	m_iCurPurchaseBatch = batch;
+	PurchaseSPtrList::const_iterator itr = purchaseSPtrList.begin();
+	PurchaseSPtrList::const_iterator end = purchaseSPtrList.end();
+	while(itr != end)
+	{
+		this->addPurchaseSData(*itr);
+		++itr;
+	}
+}
+
+void setModelData(QStandardItemModel* model, int32 row, const PurchaseSPtr pPurchaseS)
+{
+	model->setData( model->index(row, 0), pPurchaseS->id );
+	model->setData( model->index(row, 1), pPurchaseS->product_id );
+	model->setData( model->index(row, 2), pPurchaseS->count );
+	model->setData( model->index(row, 3), pPurchaseS->batch );
+	model->setData( model->index(row, 4), pPurchaseS->price_pay * 0.01 );
+	model->setData( model->index(row, 5), pPurchaseS->fee_other * 0.01 );
+}
+
+void MainWidget::addPurchaseSData(const PurchaseSPtr pPurchaseS)
+{
+	// 添加的批次不属于当前显示的批次，则不添加
+	if(pPurchaseS->batch != m_iCurPurchaseBatch)
+		return;
+	uint32 row = m_pPurchaseSModel->rowCount();
+	m_pPurchaseSModel->insertRow(row);
+	setModelData(m_pPurchaseSModel, row, pPurchaseS);
+}
+
+void MainWidget::updatePurchaseSData(const PurchaseSPtr pPurchaseS, int32 row)
+{
+	if(pPurchaseS->batch != m_iCurPurchaseBatch)
+		return;
+	setModelData(m_pPurchaseSModel, row, pPurchaseS);
+}
+
+void MainWidget::setSaleCData(const SaleCPtrList& saleCPtrList)
+{
+	int32 iRowCount = m_pSaleCModel->rowCount();
+	m_pSaleCModel->removeRows(0, iRowCount);
+	SaleCPtrList::const_iterator itr = saleCPtrList.begin();
+	SaleCPtrList::const_iterator end = saleCPtrList.end();
+	while(itr != end)
+	{
+		this->addSaleCData(*itr);
+		++itr;
+	}
+}
+
+void setModelData(QStandardItemModel* model, int32 row, const SaleCPtr pSaleC)
+{
+	model->setData( model->index(row, 0), pSaleC->id );
+	model->setData( model->index(row, 1), pSaleC->memo );
+	model->setData( model->index(row, 2), pSaleC->seller );
+	model->setData( model->index(row, 3), pSaleC->date );
+	model->setData( model->index(row, 4), pSaleC->addr );
+}
+
+void MainWidget::addSaleCData(const SaleCPtr pSaleC)
+{
+	uint32 row = m_pSaleCModel->rowCount();
+	m_pSaleCModel->insertRow(row);
+	setModelData(m_pSaleCModel, row, pSaleC);
+}
+
+void MainWidget::updateSaleCData(const SaleCPtr pSaleC, int32 row)
+{
+	setModelData(m_pSaleCModel, row, pSaleC);
+}
+
+void MainWidget::setSaleSData(const SaleSPtrList& saleSPtrList, uint32 batch)
+{
+	// 批次没有改变
+	if(m_iCurSaleBatch == batch && 
+		saleSPtrList.size() == m_pSaleSModel->rowCount())
+		return;
+	int32 iRowCount = m_pSaleSModel->rowCount();
+	m_pSaleSModel->removeRows(0, iRowCount);
+	m_iCurSaleBatch = batch;
+	SaleSPtrList::const_iterator itr = saleSPtrList.begin();
+	SaleSPtrList::const_iterator end = saleSPtrList.end();
+	while(itr != end)
+	{
+		this->addSaleSData(*itr);
+		++itr;
+	}
+}
+
+void setModelData(QStandardItemModel* model, int32 row, const SaleSPtr pPurchaseS)
+{
+	model->setData( model->index(row, 0), pPurchaseS->id );
+	model->setData( model->index(row, 1), pPurchaseS->product_id );
+	model->setData( model->index(row, 2), pPurchaseS->count );
+	model->setData( model->index(row, 3), pPurchaseS->batch );
+	model->setData( model->index(row, 4), pPurchaseS->price_pay * 0.01 );
+}
+
+void MainWidget::addSaleSData(const SaleSPtr pSaleS)
+{
+	// 添加的批次不属于当前显示的批次，则不添加
+	if(pSaleS->batch != m_iCurPurchaseBatch)
+		return;
+	uint32 row = m_pSaleSModel->rowCount();
+	m_pSaleSModel->insertRow(row);
+	setModelData(m_pSaleSModel, row, pSaleS);
+}
+
+void MainWidget::updateSaleSData(const SaleSPtr pSaleS, int32 row)
+{
+	if(pSaleS->batch != m_iCurSaleBatch)
+		return;
+	setModelData(m_pSaleSModel, row, pSaleS);
+}
+
+
+// ---------消息响应函数---------
 void MainWidget::onUpdateProductClick()
 {
-	//QModelIndex index = ui.m_pProductView->currentIndex();
 	QModelIndexList indexList = ui.m_pProductView->selectionModel()->selectedRows(0);
-	const QAbstractItemModel* model = ui.m_pProductView->selectionModel()->model();
+	if( indexList.size() < 1 )
+		return;
 	int32 row = indexList[0].row();
-	QModelIndex index = indexList[0];
-	Product p;
-	p.id = model->data(index).toInt();
-	p.name = model->data(index.sibling(row, 1)).toString();
-	p.type = model->data(index.sibling(row, 2)).toString();
-	p.MF_id = model->data(index.sibling(row, 3)).toInt();
-	p.count = model->data(index.sibling(row, 4)).toInt();
-	p.date = model->data(index.sibling(row, 5)).toString();
-	p.price_buy = model->data(index.sibling(row, 6)).toFloat() * 100;
-	p.price_nw = model->data(index.sibling(row, 7)).toFloat() * 100;
-	p.price_ww = model->data(index.sibling(row, 8)).toFloat() * 100;
-	p.fee_other = model->data(index.sibling(row, 9)).toFloat() * 100;
-	m_pProductDlg->setProduct(p);
+	if(m_pLogic)
+	{
+		ProductPtr pProduct = m_pLogic->getProductPtr(row);
+		if(pProduct)
+			m_pProductDlg->setProduct(*pProduct);
+	}
 	if( m_pProductDlg->exec() == QDialog::Accepted )
 	{
 		if( m_pLogic )
@@ -210,12 +435,105 @@ void MainWidget::onInsertFactoryClick()
 {
 	if( m_pFactoryDlg->exec() == QDialog::Accepted )
 	{
+		if( m_pLogic )
+			m_pLogic->factoryInsert( m_pFactoryDlg->getFactory() );
 	}
 }
 
 void MainWidget::onUpdateFactoryClick()
 {
+	QModelIndexList indexList = ui.m_pFactoryView->selectionModel()->selectedRows(0);
+	if( indexList.size() < 1 )
+		return;
+	int32 row = indexList[0].row();
+
+	if(m_pLogic)
+	{
+		FactoryPtr pFactory = m_pLogic->getFactoryPtr(row);
+		if(pFactory)
+			m_pFactoryDlg->setFactory(*pFactory);
+	}
 	if( m_pFactoryDlg->exec() == QDialog::Accepted )
 	{
+		if( m_pLogic )
+			m_pLogic->factoryUpdate( m_pFactoryDlg->getFactory() );
+	}
+}
+
+void MainWidget::onInsertPurchaseCClick()
+{
+	m_pPurchaseDlg->setPurchaseSVisible(false);
+	if(m_pPurchaseDlg->exec() == QDialog::Accepted)
+	{
+		if(m_pLogic)
+			m_pLogic->purchaseCInsert(m_pPurchaseDlg->getPurchaseC());
+	}
+}
+
+void MainWidget::onUpdatePurchaseCClick()
+{
+	QModelIndexList indexList = ui.m_pPurchaseCView->selectionModel()->selectedRows(0);
+	if( indexList.size() < 1 )
+		return;
+	int32 row = indexList[0].row();
+	if(m_pLogic)
+	{
+		PurchaseCPtr pPur = m_pLogic->getPurchaseCPtr(row);
+		if(pPur)
+			m_pPurchaseDlg->setPurchaseC(*pPur);
+	}
+	m_pPurchaseDlg->setPurchaseSVisible(false);
+	if(m_pPurchaseDlg->exec() == QDialog::Accepted)
+	{
+		if(m_pLogic)
+			m_pLogic->purchaseCUpdate(m_pPurchaseDlg->getPurchaseC());
+	}
+}
+
+void MainWidget::onPurchaseCViewClick(const QModelIndex & index)
+{
+	int32 row = index.row();
+	PurchaseCPtr pPurchaseC = m_pLogic->getPurchaseCPtr(row);
+	int32 iCurBatch = pPurchaseC->id;
+	
+	if(iCurBatch == m_iCurPurchaseBatch)
+		return;
+	// 当前批次不同，改变进货单条记录视图的内容
+	PurchaseSPtrList purSPtrList = m_pLogic->getPurchaseSPtrList(iCurBatch);
+	this->setPurchaseSData(purSPtrList, iCurBatch);
+}
+
+void MainWidget::onInsertPurchaseSClick()
+{
+	if(m_iCurPurchaseBatch < 0)
+		return;
+	m_pPurchaseDlg->setPurchaseSVisible(true);
+	m_pPurchaseDlg->setPurchaseSBatch(m_iCurPurchaseBatch);
+	if(m_pPurchaseDlg->exec() == QDialog::Accepted)
+	{
+		if(m_pLogic)
+			m_pLogic->purchaseSInsert(m_pPurchaseDlg->getPurchaseS());
+	}
+}
+
+void MainWidget::onUpdatePurchaseSClick()
+{
+	if(m_iCurPurchaseBatch < 0)
+		return;
+	QModelIndexList indexList = ui.m_pPurchaseSView->selectionModel()->selectedRows(0);
+	if( indexList.size() < 1 )
+		return;
+	int32 row = indexList[0].row();
+	if(m_pLogic)
+	{
+		const PurchaseSPtrList& purSList = m_pLogic->getPurchaseSPtrList(m_iCurPurchaseBatch);
+		const PurchaseSPtr pPurS = purSList[row];
+		m_pPurchaseDlg->setPurchaseS(*pPurS);
+	}
+	m_pPurchaseDlg->setPurchaseSVisible(true);
+	if(m_pPurchaseDlg->exec() == QDialog::Accepted)
+	{
+		if(m_pLogic)
+			m_pLogic->purchaseSUpdate(m_pPurchaseDlg->getPurchaseS());
 	}
 }

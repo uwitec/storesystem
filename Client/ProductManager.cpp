@@ -12,12 +12,12 @@ ProductManager::~ProductManager(void)
 {
 }
 
-QString ProductManager::searchAllCmd()
+QString ProductManager::searchAllCmd() const
 {
 	return "select * from product";
 }
 
-QString ProductManager::insertCmd(const Product& product)
+QString ProductManager::insertCmd(const Product& product) const
 {
 	const Product& p = product;
 	QString cmd = QString("insert into product values(null,"
@@ -28,7 +28,7 @@ QString ProductManager::insertCmd(const Product& product)
 	return cmd;
 }
 
-QString ProductManager::updateCmd(const Product& product)
+QString ProductManager::updateCmd(const Product& product) const
 {
 	const Product& p = product;
 	QString cmd = QString("update product set "
@@ -41,8 +41,22 @@ QString ProductManager::updateCmd(const Product& product)
 	return cmd;
 }
 
-void ProductManager::searchCallBack(const ProductPtrList& proList)
+const ProductPtr ProductManager::getProductPtr(int32 index) const
 {
+	if(index >= 0 && index < m_productList.size())
+		return m_productList[index];
+	return NULL;
+}
+
+void ProductManager::searchCallBack(ProductPtrList& proList)
+{
+	ProductPtrList::iterator itr = proList.begin();
+	ProductPtrList::iterator end = proList.end();
+	while( itr != end )
+	{
+		m_productList.push_back(*itr);
+		++itr;
+	}
 	m_pLog->debug(std::string("search count = ") + SConvert::toString(proList.size()));
 	if( m_pGui )
 		m_pGui->setProductData(proList);
@@ -65,64 +79,27 @@ void ProductManager::updateCallBack(ProductPtrList& proList)
 {
 	ProductPtrList::iterator itr = proList.begin();
 	ProductPtrList::iterator end = proList.end();
-	while( itr != end )
+	while(itr != end)
 	{
 		int32 row = -1;
 		//ProductPtr pProduct = this->findProduct( (*itr)->id, row );
-		ProductPtr pProduct = this->find( proList, (*itr)->id, row );
-		if( NULL == pProduct )
+		ProductPtr pProduct = this->find(m_productList, (*itr)->id, row);
+		if(NULL == pProduct)
 		{
 			m_pLog->error(std::string("updateCallBack->id = ") + SConvert::toString((*itr)->id) + " Not Found");
+			++itr;
+			continue;
 		}
 		pProduct->copy( *(*itr) );
 		// 更新GUI
-		if( m_pGui && row >= 0 )
+		if(m_pGui && row >= 0)
 		{
 			m_pGui->updateProductData(pProduct, row);
 		}
-		m_pLog->debug(std::string("updateCallBack with:") + SConvert::toString((*itr)->id));
-		m_pLog->debug(std::string("updateCallBack with:") + Q_To_CStr((*itr)->name));
+		// 删除临时记录
+		delete *itr;
+		//m_pLog->debug(std::string("updateCallBack with id:") + SConvert::toString((*itr)->id));
+		//m_pLog->debug(std::string("updateCallBack with row:") + SConvert::toString(row));
 		++itr;
 	}
-}
-
-ProductPtr ProductManager::findProduct(int32 id, int32& row)
-{
-	if( m_productList.size() <= 3 )
-	{
-		int32 size = m_productList.size();
-		for( int32 i = 0; i < size; ++i )
-		{
-			if( m_productList[i]->id == id )
-			{
-				row = i;
-				return m_productList[i];
-			}
-		}
-	}
-	else
-	{
-		uint32 left = 0;
-		uint32 right = m_productList.size() - 1;
-		if( m_productList[left]->id == id )
-			return m_productList[left];
-		if( m_productList[right]->id == id )
-			return m_productList[right];
-		uint32 mid = (left + right) / 2;
-		while( right - left > 1 )
-		{
-			uint32 midId = m_productList[mid]->id;
-			if( midId == id )
-			{
-				row = mid;
-				return m_productList[mid];
-			}
-			if( midId < id )
-				left = mid;
-			else
-				right = mid;
-			mid = (left + right) / 2;
-		}
-	}
-	return NULL;
 }

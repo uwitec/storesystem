@@ -15,7 +15,6 @@
 
 int main(int argc, char *argv[])
 {
-
 	QApplication a(argc, argv);	
 	QTextCodec* codec = QTextCodec::codecForName("GBK");
 	QTextCodec::setCodecForCStrings( QTextCodec::codecForName("GBK") );
@@ -28,6 +27,8 @@ int main(int argc, char *argv[])
 	logic.userSearch("");
 	logic.productSearch();
 	logic.factorySearch();
+	logic.purchaseCSearch();
+	logic.purchaseSSearch();
 
 	//TestLogicProductInsert(logic);
 	//LoginDlg loginDlg;

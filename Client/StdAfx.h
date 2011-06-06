@@ -1,8 +1,10 @@
 #include <QtGui>
+#include <QDialog>
 #include <QTcpSocket>
 #include <QString>
 #include <list>
 #include <vector>
+#include <map>
 #include <python.h>
 #include "TypeDefine.h"
 #include "LogManager.h"

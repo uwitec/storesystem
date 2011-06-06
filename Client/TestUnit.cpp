@@ -169,6 +169,25 @@ void BuildTestData()
 				logic.productInsert(product);
 			}
 		}
+		else if(name == "purchaseC")
+		{
+			PurchaseC purC;
+			for(int32 i = 0; i < count; ++i)
+			{
+				ts>>purC.date>>purC.factory_id>>purC.memo;
+				logic.purchaseCInsert(purC);
+			}
+		}
+		else if(name == "purchaseS")
+		{
+			PurchaseS purS;
+			for(int32 i = 0; i < count; ++i)
+			{
+				ts>>purS.product_id>>purS.count>>purS.batch
+				  >>purS.price_pay>>purS.fee_other;
+				logic.purchaseSInsert(purS);
+			}
+		}
 	}
 }
 

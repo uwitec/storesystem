@@ -36,9 +36,15 @@ T TableManager::find(std::vector<T>& tableList, int32 id, int32& row)
 		uint32 left = 0;
 		uint32 right = tableList.size() - 1;
 		if( tableList[left]->id == id )
+		{
+			row = left;
 			return tableList[left];
+		}
 		if( tableList[right]->id == id )
+		{
+			row = right;			
 			return tableList[right];
+		}
 		uint32 mid = (left + right) / 2;
 		while( right - left > 1 )
 		{

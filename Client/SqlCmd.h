@@ -58,6 +58,14 @@ public:
 					 ProductPtrList& productList);
 	void parseCmdDataResult(PyObjectPtr& cmd_obj,
 					 FactoryPtrList& factoryPtrList);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 PurchaseCPtrList& purchaseCPtrList);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 PurchaseSPtrList& purchaseSPtrList);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 SaleCPtrList& saleCPtrList);
+	void parseCmdDataResult(PyObjectPtr& cmd_obj,
+					 SaleSPtrList& saleSPtrList);
 protected:
 	// 获取命令对象
 	// @param tableName, 表名

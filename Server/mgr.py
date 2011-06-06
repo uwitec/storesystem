@@ -68,8 +68,8 @@ class DataBaseManager(object):
     
     def execute_insert_command(self, cmd_obj):
         command = cmd_obj.cmd_command.decode('gbk')
-        #self.db.safe_execute(command, self.cursor)
-        self.cursor.execute(command)
+        self.db.safe_execute(command, self.cursor)
+        #self.cursor.execute(command)
         cmd_data = create_cmd_data(cmd_obj)
         cmd_data.cmd_result = []
         # 获取新插入的记录
@@ -127,30 +127,65 @@ class FactoryManager(DataBaseManager):
         return Factory(row)
     
     
-class PurchaseManager(DataBaseManager):
-    '''进货单管理类'''
+class PurchaseSManager(DataBaseManager):
+    '''进货单条记录管理类'''
     
     def __init__(self, db):
-        super(PurchaseManager, self).__init__(db)
-        self.cmd_body = "select * from purchase_order "
+        super(PurchaseSManager, self).__init__(db)
+        self.cmd_body = "select * from purchaseS "
     
     def make_instance(self, row):
-        return Purchase(row)
+        return PurchaseS(row)
 
-class SaleManager(DataBaseManager):
-    '''销售单管理类'''
+class PurchaseCManager(DataBaseManager):
+    '''进货记录集合管理类'''
     
     def __init__(self, db):
-        super(SaleManager, self).__init__(db)
-        self.cmd_body = "select * from sale_order "
+        super(PurchaseCManager, self).__init__(db)
+        self.cmd_body = "select * from purchaseC "
+    
+    def make_instance(self, row):
+        return PurchaseC(row)
 
-class ReturnOrderManager(DataBaseManager):
-    '''退货单管理类'''
+class SaleSManager(DataBaseManager):
+    '''销售单条记录管理类'''
     
     def __init__(self, db):
-        super(ReturnOrderManager, self).__init__(db)
-        self.cmd_body = "select * from return_order "
+        super(SaleSManager, self).__init__(db)
+        self.cmd_body = "select * from saleS "
     
+    def make_instance(self, row):
+        return SaleS(row)
+
+class SaleCManager(DataBaseManager):
+    '''销售单条记录管理类'''
+    
+    def __init__(self, db):
+        super(SaleCManager, self).__init__(db)
+        self.cmd_body = "select * from saleC "
+    
+    def make_instance(self, row):
+        return SaleC(row)
+
+class ReturnSManager(DataBaseManager):
+    '''退货单条记录管理类'''
+    
+    def __init__(self, db):
+        super(ReturnSManager, self).__init__(db)
+        self.cmd_body = "select * from returnS "
+    
+    def make_instance(self, row):
+        return ReturnS(row)
+
+class ReturnCManager(DataBaseManager):
+    '''退货记录集合管理类'''
+    
+    def __init__(self, db):
+        super(ReturnCManager, self).__init__(db)
+        self.cmd_body = "select * from returnC "
+    
+    def make_instance(self, row):
+        return ReturnC(row)
 
 if __name__ == "__main__":
     import data

@@ -51,8 +51,7 @@ PyObjectPtr SqlCmd::parseCmdData(const QString& fullMsg,
 		m_pLog->error("parseCmdData->cmd_data_obj is NULL.");
 		return PyObjectPtr::PyObjectPtrNull;
 	}
-	tableName = m_py.getObjAttrString(cmd_data_obj, "cmd_table");
-	
+	tableName = m_py.getObjAttrString(cmd_data_obj, "cmd_table");	
 	cmdType = m_py.getObjAttrString(cmd_data_obj, "cmd_type");
 	
 	return cmd_data_obj;
@@ -152,6 +151,108 @@ void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, FactoryPtrList& factoryPtr
 		pFactory->card_type = m_py.getObjAttrString(item, "card_type");
 		pFactory->card_num = m_py.getObjAttrString(item, "card_num");
 		factoryPtrList.push_back(pFactory);
+	}
+}
+
+void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, PurchaseCPtrList& purchaseCPtrList)
+{
+	m_pLog->debug("parseCmdDataResult->PurchaseCPtrList");
+	PurchaseCPtrList::iterator itr = purchaseCPtrList.begin();
+	PurchaseCPtrList::iterator end = purchaseCPtrList.end();
+	while( itr != end )
+	{
+		delete *itr;
+	}
+	purchaseCPtrList.clear();
+	PyObjectPtr list_res = m_py.getObjAttrObject(cmd_obj, "cmd_result");
+	uint32 list_size = PyList_GET_SIZE(list_res.get());
+	for( uint32 i = 0; i < list_size; ++i )
+	{
+		PyObjectPtr item(PyList_GetItem(list_res.get(), i));
+		Py_XINCREF(item.get());
+		PurchaseCPtr pPurchaseC = new PurchaseC;
+		pPurchaseC->id = m_py.getObjAttrInt(item, "id");
+		pPurchaseC->date = m_py.getObjAttrString(item, "date");
+		pPurchaseC->factory_id = m_py.getObjAttrInt(item, "factory_id");
+		pPurchaseC->memo = m_py.getObjAttrString(item, "memo");
+		purchaseCPtrList.push_back(pPurchaseC);
+	}
+}
+
+void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, PurchaseSPtrList& purchaseSPtrList)
+{
+	m_pLog->debug("parseCmdDataResult->PurchaseSPtrList");
+	PurchaseSPtrList::iterator itr = purchaseSPtrList.begin();
+	PurchaseSPtrList::iterator end = purchaseSPtrList.end();
+	while( itr != end )
+	{
+		delete *itr;
+	}
+	purchaseSPtrList.clear();
+	PyObjectPtr list_res = m_py.getObjAttrObject(cmd_obj, "cmd_result");
+	uint32 list_size = PyList_GET_SIZE(list_res.get());
+	for( uint32 i = 0; i < list_size; ++i )
+	{
+		PyObjectPtr item(PyList_GetItem(list_res.get(), i));
+		Py_XINCREF(item.get());
+		PurchaseSPtr pPurchaseS = new PurchaseS;
+		pPurchaseS->id = m_py.getObjAttrInt(item, "id");
+		pPurchaseS->product_id = m_py.getObjAttrInt(item, "product_id");
+		pPurchaseS->count = m_py.getObjAttrInt(item, "count");
+		pPurchaseS->batch = m_py.getObjAttrInt(item, "batch");
+		pPurchaseS->price_pay = m_py.getObjAttrInt(item, "price_pay");
+		pPurchaseS->fee_other = m_py.getObjAttrInt(item, "fee_other");
+		purchaseSPtrList.push_back(pPurchaseS);
+	}
+}
+void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, SaleCPtrList& saleCPtrList)
+{
+	m_pLog->debug("parseCmdDataResult->SaleCPtrList");
+	SaleCPtrList::iterator itr = saleCPtrList.begin();
+	SaleCPtrList::iterator end = saleCPtrList.end();
+	while( itr != end )
+	{
+		delete *itr;
+	}
+	saleCPtrList.clear();
+	PyObjectPtr list_res = m_py.getObjAttrObject(cmd_obj, "cmd_result");
+	uint32 list_size = PyList_GET_SIZE(list_res.get());
+	for( uint32 i = 0; i < list_size; ++i )
+	{
+		PyObjectPtr item(PyList_GetItem(list_res.get(), i));
+		Py_XINCREF(item.get());
+		SaleCPtr pSaleC = new SaleC;
+		pSaleC->id = m_py.getObjAttrInt(item, "id");
+		pSaleC->memo = m_py.getObjAttrString(item, "memo");
+		pSaleC->seller = m_py.getObjAttrString(item, "seller");
+		pSaleC->addr = m_py.getObjAttrString(item, "addr");
+		saleCPtrList.push_back(pSaleC);
+	}
+}
+
+void SqlCmd::parseCmdDataResult(PyObjectPtr& cmd_obj, SaleSPtrList& saleSPtrList)
+{
+	m_pLog->debug("parseCmdDataResult->SaleSPtrList");
+	SaleSPtrList::iterator itr = saleSPtrList.begin();
+	SaleSPtrList::iterator end = saleSPtrList.end();
+	while( itr != end )
+	{
+		delete *itr;
+	}
+	saleSPtrList.clear();
+	PyObjectPtr list_res = m_py.getObjAttrObject(cmd_obj, "cmd_result");
+	uint32 list_size = PyList_GET_SIZE(list_res.get());
+	for( uint32 i = 0; i < list_size; ++i )
+	{
+		PyObjectPtr item(PyList_GetItem(list_res.get(), i));
+		Py_XINCREF(item.get());
+		SaleSPtr pSaleS = new SaleS;
+		pSaleS->id = m_py.getObjAttrInt(item, "id");
+		pSaleS->product_id = m_py.getObjAttrInt(item, "product_id");
+		pSaleS->count = m_py.getObjAttrInt(item, "count");
+		pSaleS->batch = m_py.getObjAttrInt(item, "batch");
+		pSaleS->price_pay = m_py.getObjAttrInt(item, "price_pay");
+		saleSPtrList.push_back(pSaleS);
 	}
 }
 
