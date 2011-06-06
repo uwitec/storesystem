@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
-    <height>445</height>
+    <width>694</width>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWidget</string>
   </property>
   <property name="currentIndex">
-   <number>4</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="m_pUserTab">
    <attribute name="title">
@@ -158,41 +158,91 @@
    <attribute name="title">
     <string>进货单</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
-     <layout class="QVBoxLayout" name="m_pPurchaseLayout">
+     <layout class="QHBoxLayout" name="m_pPurchaseLayout">
       <item>
-       <widget class="QTreeView" name="m_pPurchaseView"/>
+       <layout class="QVBoxLayout" name="m_pPurchaseCVLayout">
+        <item>
+         <widget class="QTreeView" name="m_pPurchaseCView"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="m_pPurchaseCHLayout">
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseCAddBtn">
+            <property name="text">
+             <string>添加</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseCSelBtn">
+            <property name="text">
+             <string>查询</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseCUpdBtn">
+            <property name="text">
+             <string>更新</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseCDelBtn">
+            <property name="text">
+             <string>删除</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="m_pPurchaseHLayout">
+       <widget class="QLabel" name="m_pArrowLabel">
+        <property name="text">
+         <string>=&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="m_pPurchaseSVLayout">
         <item>
-         <widget class="QPushButton" name="m_pPurchaseAddBtn">
-          <property name="text">
-           <string>添加</string>
-          </property>
-         </widget>
+         <widget class="QTreeView" name="m_pPurchaseSView"/>
         </item>
         <item>
-         <widget class="QPushButton" name="m_pPurchaseSelBtn">
-          <property name="text">
-           <string>查询</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_pPurchaseUpdBtn">
-          <property name="text">
-           <string>更新</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_pPurchaseDelBtn">
-          <property name="text">
-           <string>删除</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="m_pPurchaseSHLayout">
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseSAddBtn">
+            <property name="text">
+             <string>添加</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseSSelBtn">
+            <property name="text">
+             <string>查询</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseSUpdBtn">
+            <property name="text">
+             <string>更新</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pPurchaseSDelBtn">
+            <property name="text">
+             <string>删除</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -204,87 +254,165 @@
    <attribute name="title">
     <string>退货单</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_5">
-    <item>
-     <layout class="QVBoxLayout" name="m_pReturnLayout">
-      <item>
-       <widget class="QTreeView" name="m_pReturnView"/>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="m_pReturnHLayout">
-        <item>
-         <widget class="QPushButton" name="m_pReturnAddBtn">
-          <property name="text">
-           <string>添加</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_pReturnSelBtn">
-          <property name="text">
-           <string>查询</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_pReturnUpdBtn">
-          <property name="text">
-           <string>更新</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_pReturnDelBtn">
-          <property name="text">
-           <string>删除</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-   </layout>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>280</y>
+      <width>192</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QTreeView" name="m_pReturnView"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>=&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTreeView" name="treeView"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>322</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="m_pReturnLayout">
+     <item>
+      <layout class="QHBoxLayout" name="m_pReturnHLayout">
+       <item>
+        <widget class="QPushButton" name="m_pReturnAddBtn">
+         <property name="text">
+          <string>添加</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="m_pReturnSelBtn">
+         <property name="text">
+          <string>查询</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="m_pReturnUpdBtn">
+         <property name="text">
+          <string>更新</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="m_pReturnDelBtn">
+         <property name="text">
+          <string>删除</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QWidget" name="m_pSaleTab">
    <attribute name="title">
     <string>售单</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_6">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QVBoxLayout" name="m_pSaleLayout">
+     <layout class="QHBoxLayout" name="m_pSaleLayout">
       <item>
-       <widget class="QTreeView" name="m_pSaleView"/>
+       <layout class="QVBoxLayout" name="m_pSaleCVLayout">
+        <item>
+         <widget class="QTreeView" name="m_pSaleCView"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="m_pSaleCHLayout">
+          <item>
+           <widget class="QPushButton" name="m_pSaleCAddBtn">
+            <property name="text">
+             <string>添加</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pSaleCSelBtn">
+            <property name="text">
+             <string>查询</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pSaleCUpdBtn">
+            <property name="text">
+             <string>更新</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pSaleCDelBtn">
+            <property name="text">
+             <string>删除</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="m_pSaleHLayout">
+       <widget class="QLabel" name="m_pSaleArrowLabel">
+        <property name="text">
+         <string>=&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="m_pSaleSVLayout">
         <item>
-         <widget class="QPushButton" name="m_pSaleAddBtn">
-          <property name="text">
-           <string>添加</string>
-          </property>
-         </widget>
+         <widget class="QTreeView" name="m_pSaleSView"/>
         </item>
         <item>
-         <widget class="QPushButton" name="m_pSaleSelBtn">
-          <property name="text">
-           <string>查询</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_pSaleUpdBtn">
-          <property name="text">
-           <string>更新</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_pSaleDelBtn">
-          <property name="text">
-           <string>删除</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="m_pSaleSHLayout">
+          <item>
+           <widget class="QPushButton" name="m_pSaleSAddBtn">
+            <property name="text">
+             <string>添加</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pSaleSSelBtn">
+            <property name="text">
+             <string>查询</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pSaleSUpdBtn">
+            <property name="text">
+             <string>更新</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="m_pSaleSDelBtn">
+            <property name="text">
+             <string>删除</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>

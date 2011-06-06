@@ -34,7 +34,7 @@ public:
 	PyObjectPtr(const PyObjectPtr& objPtr, std::string objName = "");
 	~PyObjectPtr();
 	PyObject& operator * (){ return *m_pObject; };
-	PyObjectPtr& operator = (PyObject* obj);	
+	PyObjectPtr& operator = (PyObject* obj);
 	PyObjectPtr& operator = (PyObjectPtr& obj);	
 	PyObject* get(){ return m_pObject; }
 	PyObject* get() const{ return m_pObject; }

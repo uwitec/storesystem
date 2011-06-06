@@ -7,6 +7,8 @@
 #include "ProductManager.h"
 #include "FactoryManager.h"
 #include "StoreSystem.h"
+#include "PurchaseManager.h"
+#include "SaleManager.h"
 class Logic
 {
 public:
@@ -30,10 +32,26 @@ public:
 	void productInsert(const Product& product);
 	void productSearch();
 	void productUpdate(const Product& product);
+	const ProductPtr getProductPtr(int32 index) const
+	{ return m_productMgr.getProductPtr(index); }
 
 	void factoryInsert(const Factory& factory);
 	void factorySearch();
 	void factoryUpdate(const Factory& factory);
+	const FactoryPtr getFactoryPtr(int32 index) const
+	{ return m_factoryMgr.getFactoryPtr(index); }
+
+	void purchaseCInsert(const PurchaseC& purC);
+	void purchaseCSearch();
+	void purchaseCUpdate(const PurchaseC& purC);
+	const PurchaseCPtr getPurchaseCPtr(int32 index) const
+	{ return m_purchaseMgr.getPurchaseCPtr(index); }
+	
+	void purchaseSInsert(const PurchaseS& purS);
+	void purchaseSSearch();
+	void purchaseSUpdate(const PurchaseS& purS);
+	const PurchaseSPtrList& getPurchaseSPtrList(uint32 batch) const
+	{ return m_purchaseMgr.getPurchaseSPtrList(batch); }
 protected:
 	SqlCmd* m_pSqlCmd;
 	ClientNet* m_pNet;
@@ -41,4 +59,6 @@ protected:
 	UserManager m_userMgr;
 	ProductManager m_productMgr;
 	FactoryManager m_factoryMgr;
+	PurchaseManager m_purchaseMgr;
+	SaleManager m_saleMgr;
 };

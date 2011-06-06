@@ -43,9 +43,23 @@ QString FactoryManager::updateCmd(const Factory& factory)
 	return cmd;
 }
 
-void FactoryManager::searchCallBack(const FactoryPtrList& factoryList)
+const FactoryPtr FactoryManager::getFactoryPtr(int32 index) const
+{
+	if( index >= 0 && index < m_factoryPtrList.size() )
+		return m_factoryPtrList[index];
+	return NULL;
+}
+
+void FactoryManager::searchCallBack(FactoryPtrList& factoryList)
 {
 	m_pLog->debug(std::string("search count = ") + SConvert::toString(factoryList.size()));
+	FactoryPtrList::iterator itr = factoryList.begin();
+	FactoryPtrList::iterator end = factoryList.end();
+	while( itr != end )
+	{
+		m_factoryPtrList.push_back(*itr);
+		++itr;
+	}
 	if( m_pGui )
 		m_pGui->setFactoryData(factoryList);
 }
@@ -73,7 +87,7 @@ void FactoryManager::updateCallBack(FactoryPtrList& factoryList)
 	{
 		int32 row = -1;
 		//ProductPtr pProduct = this->findProduct( (*itr)->id, row );
-		FactoryPtr pFactory = this->find( factoryList, (*itr)->id, row );
+		FactoryPtr pFactory = this->find( m_factoryPtrList, (*itr)->id, row );
 		if( NULL == pFactory )
 		{
 			m_pLog->error(std::string("updateCallBack->id = ") + SConvert::toString((*itr)->id) + " Not Found");
@@ -86,6 +100,8 @@ void FactoryManager::updateCallBack(FactoryPtrList& factoryList)
 		{
 			m_pGui->updateFactoryData(pFactory, row);
 		}
+		// É¾³ıÁÙÊ±µÄ¼ÇÂ¼
+		delete *itr;
 		m_pLog->debug(std::string("updateCallBack with:") + SConvert::toString((*itr)->id));
 		m_pLog->debug(std::string("updateCallBack with:") + Q_To_CStr((*itr)->name));
 		++itr;

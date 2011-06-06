@@ -11,9 +11,12 @@ class Logic:
         self.user_mgr = mgr.UserManager(self.db)
         self.product_mgr = mgr.ProductManager(self.db)
         self.factory_mgr = mgr.FactoryManager(self.db)
-        self.purchase_mgr = None
-        self.return_order_mgr = None
-        self.sale_mgr = None
+        self.purchaseC_mgr = mgr.PurchaseCManager(self.db)
+        self.purchaseS_mgr = mgr.PurchaseSManager(self.db)
+        self.saleC_mgr = mgr.SaleCManager(self.db)
+        self.saleS_mgr = mgr.SaleSManager(self.db)
+        self.returnC_mgr = mgr.ReturnCManager(self.db)
+        self.returnS_mgr = mgr.ReturnSManager(self.db)
     
     def process_cmd_obj(self, cmd_obj):
         cmd_table = cmd_obj.cmd_table.lower()
@@ -23,17 +26,18 @@ class Logic:
             return self.product_mgr.execute_command(cmd_obj)
         elif cmd_table == "factory":
             return self.factory_mgr.execute_command(cmd_obj)
-    
-    def build_sql_command(self, cmd_obj):
-        pass
-    
-    def build_insert_common(self, cmd_obj):
-        command = """
-            INSERT into %s values
-        """
-    
-    def Init_DataBase(self):
-        pass
+        elif cmd_table == "purchasec":
+            return self.purchaseC_mgr.execute_command(cmd_obj)
+        elif cmd_table == "purchases":
+            return self.purchaseS_mgr.execute_command(cmd_obj)
+        elif cmd_table == "salec":
+            return self.saleC_mgr.execute_command(cmd_obj)
+        elif cmd_table == "sales":
+            return self.saleS_mgr.execute_command(cmd_obj)
+        elif cmd_table == "returnc":
+            return self.returnC_mgr.execute_command(cmd_obj)
+        elif cmd_table == "returns":
+            return self.returnS_mgr.execute_command(cmd_obj) 
 
 if __name__ == "__main__":
     from common.cmd import *

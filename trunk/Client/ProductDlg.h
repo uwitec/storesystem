@@ -14,9 +14,17 @@ public:
 	~ProductDlg();
 	const Product& getProduct(){ return m_product; }
 	void setProduct(const Product& product);
+	// 让产品名、类型名的ComboBox有自动完成的功能
+	// @param pProductModel，产品的Model
+	void setCompleterModel(QStandardItemModel* pProductModel);
+	// 让厂商的ComboBox具有厂商选项
+	// @param pFactoryModel，厂商的Model
+	// @param pCompleter，自动完成
+	void setFactoryModel(QStandardItemModel* pFactoryModel,
+						 QCompleter* pCompleter);
 public slots:
 	void accept();
-private:
+protected:
 	Ui::ProductDlg ui;
 	Product m_product;
 };
